@@ -16,20 +16,39 @@ fn install_dependencies() {
               "install",
 
               // Utilities
-              "wget",
-              "unzip",
+              "bash",
+              "coreutils",
+              "diffutils",
               "fd-find",
-              "ripgrep",
-
-              // Toolchains
               "git",
-              "gcc",
-              "gcc-c++",
-              "cmake",
-              "npm",
+              "patch",
+              "ripgrep",
+              "tree",
+              "unzip",
+              "wget",
 
               // Applications
-              "neovim"
+              "neovim",
+
+              // C
+              "cmake",
+              "gcc",
+              "make",
+
+              // C++
+              "gcc-c++",
+
+              // Python
+              "python",
+
+              // Javascript
+              "npm",
+
+              // RPM
+              "rpm-build",
+              "rpm-devel",
+              "rpmdevtools",
+              "rpmlint"
         ])
         .output()
         .unwrap();
