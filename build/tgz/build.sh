@@ -52,7 +52,7 @@ OPTSTR+="${CHAR_OPT_SRCDIR}:"
 
 # File: -f <file name>
 CHAR_OPT_FILE="f"
-DEFAULT_OPT_FILE="dboeger1-dotfiles.tar.gz"
+DEFAULT_OPT_FILE="dboeger1-dotfiles-0.0.1.tar.gz"
 opt_file="${DEFAULT_OPT_FILE}"
 OPTSTR+="${CHAR_OPT_FILE}:"
 
@@ -185,7 +185,9 @@ fi
 #
 # Build.
 #
-tar -c -C "${opt_srcdir}" -f "${opt_file}" neovim tmux
+
+# TODO: Properly handle versioning, root directory, etc.
+tar -c -C "${opt_srcdir}" -f "${opt_file}" dboeger1-dotfiles-0.0.1
 if [ "${?}" -ne "0" ]
 then
     echo "Failed to build archive: \"${opt_file}\"" 1>&2
