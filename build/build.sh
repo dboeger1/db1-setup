@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 
 #
@@ -97,6 +97,7 @@ USAGE=$(printf "${USAGE}"   \
     "${CHAR_OPT_DESTDIR}"   \
     "${STR_ARG_DESTDIR}"    \
     "${CHAR_OPT_VERSION}"   \
+    "${STR_ARG_VERSION}"    \
     "${PROGRAM}"            \
     "${CHAR_OPT_HELP}"      \
 )
@@ -316,36 +317,46 @@ then
 fi
 
 if
-    [ "${opt_build}" = "true" ]     &&
+    [ "${opt_build}" = "true" ] &&
     [ "${arg_build}" != "src" ] &&
-    [ "${arg_build}" != "rpm" ] &&
     [ "${arg_build}" != "deb" ] &&
+    [ "${arg_build}" != "rpm" ] &&
     [ "${arg_build}" != "all" ]
 then
     echo "Invalid -${CHAR_OPT_BUILD} argument: \"${arg_build}\"" 1>&2
-    echo "Must be one of: {\"src\", \"rpm\", \"deb\", \"all\"}" 1>&2
+    printf "Must be one of: {\"%s\", \"%s\", \"%s\", \"%s\"}\n" \
+        "${STR_ARG_BUILD_SRC}" \
+        "${STR_ARG_BUILD_DEB}" \
+        "${STR_ARG_BUILD_RPM}" \
+        "${STR_ARG_BUILD_ALL}" \
+        1>&2
     exit_usage_err
 fi
 
 if
     [ "${opt_clean}" = "true" ]     &&
     [ "${arg_clean}" != "src" ] &&
-    [ "${arg_clean}" != "rpm" ] &&
     [ "${arg_clean}" != "deb" ] &&
+    [ "${arg_clean}" != "rpm" ] &&
     [ "${arg_clean}" != "all" ]
 then
     echo "Invalid -${CHAR_OPT_CLEAN} argument: \"${arg_clean}\"" 1>&2
-    echo "Must be one of: {\"src\", \"rpm\", \"deb\", \"all\"}" 1>&2
+    printf "Must be one of: {\"%s\", \"%s\", \"%s\", \"%s\"}\n" \
+        "${STR_ARG_CLEAN_SRC}" \
+        "${STR_ARG_CLEAN_DEB}" \
+        "${STR_ARG_CLEAN_RPM}" \
+        "${STR_ARG_CLEAN_ALL}" \
+        1>&2
     exit_usage_err
 fi
 
-if [ ! -d "${arg_srcdir}" ]
+if [ "${opt_srcdir}" = "true" ] && [ ! -d "${arg_srcdir}" ]
 then
     echo "Source directory does not exist: \"${arg_srcdir}\"" 1>&2
     exit_usage_err
 fi
 
-if [ ! -d "${arg_destdir}" ]
+if [ "${opt_destdir}" = "true" ] && [ ! -d "${arg_destdir}" ]
 then
     echo "Destination directory does not exist: \"${arg_destdir}\"" 1>&2
     exit_usage_err
