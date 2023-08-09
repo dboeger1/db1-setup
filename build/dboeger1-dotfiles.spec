@@ -1,3 +1,6 @@
+%{!?prefix_app: %global prefix_app /opt}
+%global app_dir %{prefix_app}/dboeger1-dotfiles
+
 Name: dboeger1-dotfiles
 Version: 0.0.1
 Release: 1%{?dist}
@@ -25,32 +28,32 @@ BuildArch: noarch
 %install
 (
     cd tmux &&
-    exec install -D -t %{buildroot}/usr/bin/tmux \
+    exec install -D -t %{buildroot}/%{prefix_app}/tmux \
         .tmux.conf
 )
 
 (
     cd neovim &&
-    exec install -D -t %{buildroot}/usr/bin/neovim \
+    exec install -D -t %{buildroot}/%{prefix_app}/neovim \
         init.lua \
         lazy-lock.json
 )
 
 (
     cd neovim/lua &&
-    exec install -D -t %{buildroot}/usr/bin/neovim/lua \
+    exec install -D -t %{buildroot}/%{prefix_app}/neovim/lua \
         .luarc.json
 )
 
 (
     cd neovim/lua/plugins &&
-    exec install -D -t %{buildroot}/usr/bin/neovim/lua/plugins \
+    exec install -D -t %{buildroot}/%{prefix_app}/neovim/lua/plugins \
         plugin_netrw.lua
 )
 
 (
     cd neovim/lua/plugins/lazy &&
-    exec install -D -t %{buildroot}/usr/bin/neovim/lua/plugins/lazy \
+    exec install -D -t %{buildroot}/%{prefix_app}/neovim/lua/plugins/lazy \
         plugin_cmp.lua \
         plugin_kanagawa.lua \
         plugin_lualine.lua \
@@ -64,7 +67,7 @@ BuildArch: noarch
 
 (
     cd neovim/lua/settings &&
-    exec install -D -t %{buildroot}/usr/bin/neovim/lua/settings \
+    exec install -D -t %{buildroot}/%{prefix_app}/neovim/lua/settings \
         indentation.lua \
         information.lua \
         key_maps.lua \
@@ -78,26 +81,26 @@ BuildArch: noarch
 
 
 %files
-/usr/bin/tmux/.tmux.conf
-/usr/bin/neovim/init.lua
-/usr/bin/neovim/lazy-lock.json
-/usr/bin/neovim/lua/.luarc.json
-/usr/bin/neovim/lua/plugins/plugin_netrw.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_cmp.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_kanagawa.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_lualine.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_mason.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_nightfox.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_snippy.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_telescope.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_telescope_fzf_native.lua
-/usr/bin/neovim/lua/plugins/lazy/plugin_treesitter.lua
-/usr/bin/neovim/lua/settings/indentation.lua
-/usr/bin/neovim/lua/settings/information.lua
-/usr/bin/neovim/lua/settings/key_maps.lua
-/usr/bin/neovim/lua/settings/tabs.lua
-/usr/bin/neovim/lua/settings/themes.lua
-/usr/bin/neovim/lua/settings/windows.lua
+/%{prefix_app}/tmux/.tmux.conf
+/%{prefix_app}/neovim/init.lua
+/%{prefix_app}/neovim/lazy-lock.json
+/%{prefix_app}/neovim/lua/.luarc.json
+/%{prefix_app}/neovim/lua/plugins/plugin_netrw.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_cmp.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_kanagawa.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_lualine.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_mason.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_nightfox.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_snippy.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_telescope.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_telescope_fzf_native.lua
+/%{prefix_app}/neovim/lua/plugins/lazy/plugin_treesitter.lua
+/%{prefix_app}/neovim/lua/settings/indentation.lua
+/%{prefix_app}/neovim/lua/settings/information.lua
+/%{prefix_app}/neovim/lua/settings/key_maps.lua
+/%{prefix_app}/neovim/lua/settings/tabs.lua
+/%{prefix_app}/neovim/lua/settings/themes.lua
+/%{prefix_app}/neovim/lua/settings/windows.lua
 
 
 %changelog
