@@ -371,8 +371,18 @@ fi
 if [ "${opt_build}" = "true" ]
 then
     echo "Building..."
+    mkdir -p ${arg_destdir}/rpmbuild/BUILD
+    mkdir -p ${arg_destdir}/rpmbuild/BUILDROOT
+    mkdir -p ${arg_destdir}/rpmbuild/RPMS
+    mkdir -p ${arg_destdir}/rpmbuild/SOURCES
+    mkdir -p ${arg_destdir}/rpmbuild/SPECS
+    mkdir -p ${arg_destdir}/rpmbuild/SRPMS
+    tar -c \
+        -C "${arg_srcdir}" \
+        -f "${arg_destdir}/rpmbuild/SOURCES/dboeger1-dotfiles-${arg_version}".tar.gz \
+        neovim \
+        tmux
     exit 0
-    #tar -c -C "${opt_srcdir}" -f "${opt_file}" dboeger1-dotfiles-0.0.1
 fi
 
 #
@@ -381,5 +391,6 @@ fi
 if [ "${opt_clean}" = "true" ]
 then
     echo "Cleaning..."
+    rm -rf ${arg_destdir}/rpmbuild
     exit 0
 fi
