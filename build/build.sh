@@ -368,18 +368,37 @@ fi
 #
 # Build.
 #
+app=$(grep "Name:" ${arg_destdir}/*.spec | awk '{print $2}')
+echo "app: \"${app}\""
+version=$(grep "Version:" ${arg_destdir}/*.spec | awk '{print $2}')
+echo "version: \"${version}\""
+
+src_dir="${arg_destdir}/src"
+
+deb_dir="${arg_destdir}/deb"
+
+rpm_dir="${arg_destdir}/rpm"
+rpmbuild_dir="${rpm_dir}/rpmbuild"
+rpmbuild_build_dir="${rpmbuild_dir}/BUILD"
+rpmbuild_buildroot_dir="${rpmbuild_dir}/BUILDROOT"
+rpmbuild_rpms_dir="${rpmbuild_dir}/RPMS"
+rpmbuild_sources_dir="${rpmbuild_dir}/SOURCES"
+rpmbuild_specs_dir="${rpmbuild_dir}/SPECS"
+rpmbuild_srpmd_dir="${rpmbuild_dir}/SRPMS"
+
 if [ "${opt_build}" = "true" ]
 then
     echo "Building..."
-    mkdir -p ${arg_destdir}/rpmbuild/BUILD
-    mkdir -p ${arg_destdir}/rpmbuild/BUILDROOT
-    mkdir -p ${arg_destdir}/rpmbuild/RPMS
-    mkdir -p ${arg_destdir}/rpmbuild/SOURCES
-    mkdir -p ${arg_destdir}/rpmbuild/SPECS
-    mkdir -p ${arg_destdir}/rpmbuild/SRPMS
+    mkdir -p \
+        ${rpmbuild_build_dir} \
+        ${rpmbuild_buildroot_dir} \
+        ${rpmbuild_rpms_dir} \
+        ${rpmbuild_sources_dir} \
+        ${rpmbuild_specs_dir} \
+        ${rpmbuild_srpms_dir}
     tar -c \
         -C "${arg_srcdir}" \
-        -f "${arg_destdir}/rpmbuild/SOURCES/dboeger1-dotfiles-${arg_version}".tar.gz \
+        -f "${rpmbuild_sources_dir}/${app}-${version}.tar.gz" \
         neovim \
         tmux
     exit 0
@@ -391,6 +410,6 @@ fi
 if [ "${opt_clean}" = "true" ]
 then
     echo "Cleaning..."
-    rm -rf ${arg_destdir}/rpmbuild
+    rm -rf ${rpm_dir}
     exit 0
 fi
