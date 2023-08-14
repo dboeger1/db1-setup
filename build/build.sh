@@ -340,15 +340,9 @@ then
     exit_usage_err
 fi
 
-if [ "${opt_srcdir}" = "true" ] && [ ! -d "${arg_srcdir}" ]
+if [ "${opt_projdir}" = "true" ] && [ ! -d "${arg_projdir}" ]
 then
-    echo "Source directory does not exist: \"${arg_srcdir}\"" 1>&2
-    exit_usage_err
-fi
-
-if [ "${opt_destdir}" = "true" ] && [ ! -d "${arg_destdir}" ]
-then
-    echo "Destination directory does not exist: \"${arg_destdir}\"" 1>&2
+    echo "Project directory does not exist: \"${arg_projdir}\"" 1>&2
     exit_usage_err
 fi
 
@@ -358,17 +352,18 @@ fi
 #
 # Build.
 #
-app=$(grep "Name:" ${arg_destdir}/*.spec | awk '{print $2}')
-echo "app: \"${app}\""
-version=$(grep "Version:" ${arg_destdir}/*.spec | awk '{print $2}')
-echo "version: \"${version}\""
+proj_src_dir="${arg_projdir}/src"
 
-src_dir="${arg_destdir}/src"
+proj_build_dir="${arg_projdir}/build"
 
-deb_dir="${arg_destdir}/deb"
+build_src_dir="${arg_projdir}/src"
+src_file="${build_src_dir}/${arg_name}-${arg_version}.tar.gz"
 
-rpm_dir="${arg_destdir}/rpm"
-rpmbuild_dir="${rpm_dir}/rpmbuild"
+build_deb_dir="${arg_projdir}/deb"
+deb_dir="${build_deb_dir}/DEB"
+
+build_rpm_dir="${arg_projdir}/rpm"
+rpmbuild_dir="${build_rpm_dir}/rpmbuild"
 rpmbuild_build_dir="${rpmbuild_dir}/BUILD"
 rpmbuild_buildroot_dir="${rpmbuild_dir}/BUILDROOT"
 rpmbuild_rpms_dir="${rpmbuild_dir}/RPMS"
@@ -378,19 +373,26 @@ rpmbuild_srpmd_dir="${rpmbuild_dir}/SRPMS"
 
 if [ "${opt_build}" = "true" ]
 then
-    echo "Building..."
-    mkdir -p \
-        ${rpmbuild_build_dir} \
-        ${rpmbuild_buildroot_dir} \
-        ${rpmbuild_rpms_dir} \
-        ${rpmbuild_sources_dir} \
-        ${rpmbuild_specs_dir} \
-        ${rpmbuild_srpms_dir}
-    tar -c \
-        -C "${arg_srcdir}" \
-        -f "${rpmbuild_sources_dir}/${app}-${version}.tar.gz" \
-        neovim \
-        tmux
+    tar -c -C "${proj_src_dir}" -f "${src_file}" neovim tmux
+
+    if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all"]
+    then
+        mkdir -p ${deb_dir}
+    fi
+
+    if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all"]
+    then
+        mkdir -p \
+            ${rpmbuild_build_dir} \
+            ${rpmbuild_buildroot_dir} \
+            ${rpmbuild_rpms_dir} \
+            ${rpmbuild_sources_dir} \
+            ${rpmbuild_specs_dir} \
+            ${rpmbuild_srpms_dir}
+
+        cp ${src_file} ${rpmbuild_sources_dir}/
+    fi
+
     exit 0
 fi
 
@@ -400,6 +402,6 @@ fi
 if [ "${opt_clean}" = "true" ]
 then
     echo "Cleaning..."
-    rm -rf ${rpm_dir}
+
     exit 0
 fi
