@@ -382,15 +382,15 @@ then
         rm -rf ${deb_dir}
     fi
 
-    if [ -e "${src_dir}" ]
+    if [ -e "${build_src_dir}" ]
     then
-        if [ ! -d "${src_dir}" ]
+        if [ ! -d "${build_src_dir}" ]
         then
-            echo "Cannot clean non-directory: \"${src_dir}\"" 1>&2
+            echo "Cannot clean non-directory: \"${build_src_dir}\"" 1>&2
             exit 1
         fi
 
-        rm -rf ${src_dir}
+        rm -rf ${build_src_dir}
     fi
 
     exit 0
