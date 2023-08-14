@@ -34,7 +34,7 @@ OPTSTR+="${CHAR_OPT_BUILD}:"
 
 CHAR_OPT_CLEAN="c"
 opt_clean="false"
-OPTSTR+="${CHAR_OPT_CLEAN}:"
+OPTSTR+="${CHAR_OPT_CLEAN}"
 
 CHAR_OPT_FORCE="f"
 opt_force="false"
@@ -136,7 +136,7 @@ Mode options:
                     without making any changes. This behavior can be changed
                     with -%c.
 
-    -c              Clean all build artifacts from the project root directory,
+    -%c              Clean all build artifacts from the project root directory,
                     which can be specified with -%c.
 
 Common mode modifier options:
@@ -333,7 +333,6 @@ if [ "${opt_build}" = "true" ]
 then
     mkdir -p ${build_src_dir}
     tar -c -C "${proj_src_dir}" -f "${src_file}" neovim tmux
-    exit 0
 
     if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all" ]
     then
