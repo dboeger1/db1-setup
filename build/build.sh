@@ -354,8 +354,11 @@ then
         sed \
             -e "s/^Name:\$/Name: ${arg_name}/" \
             -e "s/^Version:\$/Version: ${arg_version}/" \
-            ${build_rpm_dir}/${arg_name}.spec \
-            > ${rpmbuild_specs_dir}/${arg_name}-${arg_version}.spec
+            ${build_rpm_dir}/name.spec \
+            > ${rpmbuild_specs_dir}/${arg_name}.spec
+
+        rpmbuild --define "_topdir ${rpmbuild_dir}" -ba \
+            ${rpmbuild_specs_dir}/${arg_name}.spec
     fi
 
     exit 0
