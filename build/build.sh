@@ -341,11 +341,6 @@ then
 
     if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all" ]
     then
-        sed \
-            -e "s/^Name:\$/Name: ${arg_name}" \
-            -e "s/^Version:\$/Version: ${arg_version}" \
-            > ${rpmbuild_specs_dir}/${arg_name}-${arg_version}.spec
-
         mkdir -p \
             ${rpmbuild_build_dir} \
             ${rpmbuild_buildroot_dir} \
@@ -355,6 +350,12 @@ then
             ${rpmbuild_srpms_dir}
 
         cp ${src_file} ${rpmbuild_sources_dir}/
+
+        sed \
+            -e "s/^Name:\$/Name: ${arg_name}/" \
+            -e "s/^Version:\$/Version: ${arg_version}/" \
+            ${build_rpm_dir}/${arg_name}.spec \
+            > ${rpmbuild_specs_dir}/${arg_name}-${arg_version}.spec
     fi
 
     exit 0
