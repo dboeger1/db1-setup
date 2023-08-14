@@ -356,13 +356,13 @@ proj_src_dir="${arg_projdir}/src"
 
 proj_build_dir="${arg_projdir}/build"
 
-build_src_dir="${arg_projdir}/src"
+build_src_dir="${proj_build_dir}/src"
 src_file="${build_src_dir}/${arg_name}-${arg_version}.tar.gz"
 
-build_deb_dir="${arg_projdir}/deb"
+build_deb_dir="${proj_build_dir}/deb"
 deb_dir="${build_deb_dir}/DEB"
 
-build_rpm_dir="${arg_projdir}/rpm"
+build_rpm_dir="${proj_build_dir}/rpm"
 rpmbuild_dir="${build_rpm_dir}/rpmbuild"
 rpmbuild_build_dir="${rpmbuild_dir}/BUILD"
 rpmbuild_buildroot_dir="${rpmbuild_dir}/BUILDROOT"
@@ -373,14 +373,16 @@ rpmbuild_srpmd_dir="${rpmbuild_dir}/SRPMS"
 
 if [ "${opt_build}" = "true" ]
 then
+    mkdir -p ${build_src_dir}
     tar -c -C "${proj_src_dir}" -f "${src_file}" neovim tmux
+    exit 0
 
-    if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all"]
+    if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all" ]
     then
         mkdir -p ${deb_dir}
     fi
 
-    if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all"]
+    if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all" ]
     then
         mkdir -p \
             ${rpmbuild_build_dir} \
