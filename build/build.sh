@@ -34,13 +34,6 @@ OPTSTR+="${CHAR_OPT_BUILD}:"
 
 CHAR_OPT_CLEAN="c"
 opt_clean="false"
-STR_ARG_CLEAN="ARTIFACT"
-STR_ARG_CLEAN_SRC="src"
-STR_ARG_CLEAN_DEB="deb"
-STR_ARG_CLEAN_RPM="rpm"
-STR_ARG_CLEAN_ALL="all"
-DEFAULT_ARG_CLEAN=""
-arg_clean="${DEFAULT_ARG_CLEAN}"
 OPTSTR+="${CHAR_OPT_CLEAN}:"
 
 CHAR_OPT_FORCE="f"
@@ -77,7 +70,7 @@ OPTSTR+="${CHAR_OPT_VERSION}:"
 # Usage statement.
 #
 USAGE="$(cat << END
-Usage: %s {-%c | -%c | -%c %s | -%c %s} [-%c%c]
+Usage: %s {-%c | -%c | -%c %s | -%c} [-%c%c]
         [-%c %s] [-%c %s] [-%c %s]
     Run \"%s -%c\" for more help.
 END
@@ -89,7 +82,6 @@ USAGE=$(printf "${USAGE}"   \
     "${CHAR_OPT_BUILD}"     \
     "${STR_ARG_BUILD}"      \
     "${CHAR_OPT_CLEAN}"     \
-    "${STR_ARG_CLEAN}"      \
     "${CHAR_OPT_FORCE}"     \
     "${CHAR_OPT_VERBOSE}"   \
     "${CHAR_OPT_PROJDIR}"   \
@@ -144,14 +136,8 @@ Mode options:
                     without making any changes. This behavior can be changed
                     with -%c.
 
-    -%c %s     Clean the specified build artifacts from the project root
-                    directory, which can be specified with -%c. The %s
-                    argument specifies which artifacts to clean. Valid values
-                    are "%s", "%s", "%s", and "%s". "%s" removes the source
-                    bundle. "%s" and "%s" remove the respective package. "%s"
-                    removes all of the previously mentioned artifacts. If
-                    multiple instances of this option are provided, all
-                    specified artifacts are removed.
+    -c              Clean all build artifacts from the project root directory,
+                    which can be specified with -%c.
 
 Common mode modifier options:
 
@@ -193,17 +179,7 @@ HELP=$(printf "${HELP}"         \
     "${STR_ARG_BUILD_ALL}"      \
     "${CHAR_OPT_FORCE}"         \
     "${CHAR_OPT_CLEAN}"         \
-    "${STR_ARG_CLEAN}"          \
     "${CHAR_OPT_PROJDIR}"       \
-    "${STR_ARG_CLEAN}"          \
-    "${STR_ARG_CLEAN_SRC}"      \
-    "${STR_ARG_CLEAN_DEB}"      \
-    "${STR_ARG_CLEAN_RPM}"      \
-    "${STR_ARG_CLEAN_ALL}"      \
-    "${STR_ARG_CLEAN_SRC}"      \
-    "${STR_ARG_CLEAN_DEB}"      \
-    "${STR_ARG_CLEAN_RPM}"      \
-    "${STR_ARG_CLEAN_ALL}"      \
     "${CHAR_OPT_PROJDIR}"       \
     "${STR_ARG_PROJDIR}"        \
     "${CHAR_OPT_NAME}"          \
@@ -241,7 +217,6 @@ do
         ;;
     "${CHAR_OPT_CLEAN}")
         opt_clean="true"
-        arg_clean="${OPTARG}"
         ;;
     "${CHAR_OPT_FORCE}")
         opt_force="true"
@@ -323,23 +298,6 @@ then
     exit_usage_err
 fi
 
-if
-    [ "${opt_clean}" = "true" ]     &&
-    [ "${arg_clean}" != "src" ] &&
-    [ "${arg_clean}" != "deb" ] &&
-    [ "${arg_clean}" != "rpm" ] &&
-    [ "${arg_clean}" != "all" ]
-then
-    echo "Invalid -${CHAR_OPT_CLEAN} argument: \"${arg_clean}\"" 1>&2
-    printf "Must be one of: {\"%s\", \"%s\", \"%s\", \"%s\"}\n" \
-        "${STR_ARG_CLEAN_SRC}" \
-        "${STR_ARG_CLEAN_DEB}" \
-        "${STR_ARG_CLEAN_RPM}" \
-        "${STR_ARG_CLEAN_ALL}" \
-        1>&2
-    exit_usage_err
-fi
-
 if [ "${opt_projdir}" = "true" ] && [ ! -d "${arg_projdir}" ]
 then
     echo "Project directory does not exist: \"${arg_projdir}\"" 1>&2
@@ -403,7 +361,38 @@ fi
 #
 if [ "${opt_clean}" = "true" ]
 then
-    echo "Cleaning..."
+    if [ -e "${rpmbuild_dir}" ]
+    then
+        if [ ! -d "${rpmbuild_dir}" ]
+        then
+            echo "Cannot clean non-directory: \"${rpmbuild_dir}\"" 1>&2
+            exit 1
+        fi
+
+        rm -rf ${rpmbuild_dir}
+    fi
+
+    if [ -e "${deb_dir}" ]
+    then
+        if [ ! -d "${deb_dir}" ]
+        then
+            echo "Cannot clean non-directory: \"${deb_dir}\"" 1>&2
+            exit 1
+        fi
+
+        rm -rf ${deb_dir}
+    fi
+
+    if [ -e "${src_dir}" ]
+    then
+        if [ ! -d "${src_dir}" ]
+        then
+            echo "Cannot clean non-directory: \"${src_dir}\"" 1>&2
+            exit 1
+        fi
+
+        rm -rf ${src_dir}
+    fi
 
     exit 0
 fi
