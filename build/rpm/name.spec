@@ -5,7 +5,7 @@ Summary: Collection of GitHub user dboeger1's personal configuration files.
 
 License: None
 #URL:
-Source0:/root/rpmbuild/SOURCES/dboeger1-dotfiles-0.0.1.tar.gz
+Source0:
 #
 #BuildRequires:
 #Requires:

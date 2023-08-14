@@ -315,7 +315,8 @@ proj_src_dir="${arg_projdir}/src"
 proj_build_dir="${arg_projdir}/build"
 
 build_src_dir="${proj_build_dir}/src"
-src_file="${build_src_dir}/${arg_name}-${arg_version}.tar.gz"
+src_file_name="${arg_name}-${arg_version}.tar.gz"
+src_file="${build_src_dir}/${src_file_name}"
 
 build_deb_dir="${proj_build_dir}/deb"
 deb_dir="${build_deb_dir}/DEB"
@@ -327,12 +328,15 @@ rpmbuild_buildroot_dir="${rpmbuild_dir}/BUILDROOT"
 rpmbuild_rpms_dir="${rpmbuild_dir}/RPMS"
 rpmbuild_sources_dir="${rpmbuild_dir}/SOURCES"
 rpmbuild_specs_dir="${rpmbuild_dir}/SPECS"
-rpmbuild_srpmd_dir="${rpmbuild_dir}/SRPMS"
+rpmbuild_srpms_dir="${rpmbuild_dir}/SRPMS"
+rpmbuild_src_file="${rpmbuild_sources_dir}/${src_file_name}"
 
 if [ "${opt_build}" = "true" ]
 then
     mkdir -p ${build_src_dir}
-    tar -c -C "${proj_src_dir}" -f "${src_file}" neovim tmux
+    tar -c -C "${proj_src_dir}" -f "${src_file}" \
+        --transform="s_^_${arg_name}-${arg_version}/_" \
+        neovim tmux
 
     if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all" ]
     then
@@ -349,16 +353,17 @@ then
             ${rpmbuild_specs_dir} \
             ${rpmbuild_srpms_dir}
 
-        cp ${src_file} ${rpmbuild_sources_dir}/
+        cp ${src_file} ${rpmbuild_src_file}
 
         sed \
             -e "s/^Name:\$/Name: ${arg_name}/" \
             -e "s/^Version:\$/Version: ${arg_version}/" \
+            -e "s/^Source0:\$/Source0: ${rpmbuild_src_file}/" \
             ${build_rpm_dir}/name.spec \
             > ${rpmbuild_specs_dir}/${arg_name}.spec
 
-        rpmbuild --define "_topdir ${rpmbuild_dir}" -ba \
-            ${rpmbuild_specs_dir}/${arg_name}.spec
+        #rpmbuild --define "_topdir ${rpmbuild_dir}" -ba \
+        #    ${rpmbuild_specs_dir}/${arg_name}.spec
     fi
 
     exit 0
