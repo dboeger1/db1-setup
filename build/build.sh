@@ -51,19 +51,19 @@ CHAR_OPT_VERBOSE="v"
 opt_verbose="false"
 OPTSTR+="${CHAR_OPT_VERBOSE}"
 
-CHAR_OPT_SRCDIR="S"
-opt_srcdir="false"
-STR_ARG_SRCDIR="SRC_DIR"
-DEFAULT_ARG_SRCDIR="${PWD}"
-arg_srcdir="${DEFAULT_ARG_SRCDIR}"
-OPTSTR+="${CHAR_OPT_SRCDIR}:"
+CHAR_OPT_PROJDIR="d"
+opt_projdir="false"
+STR_ARG_PROJDIR="PROJ_DIR"
+DEFAULT_ARG_PROJDIR="${PWD}"
+arg_projdir="${DEFAULT_ARG_PROJDIR}"
+OPTSTR+="${CHAR_OPT_PROJDIR}:"
 
-CHAR_OPT_DESTDIR="D"
-opt_destdir="false"
-STR_ARG_DESTDIR="DEST_DIR"
-DEFAULT_ARG_DESTDIR="${PWD}"
-arg_destdir="${DEFAULT_ARG_DESTDIR}"
-OPTSTR+="${CHAR_OPT_DESTDIR}:"
+CHAR_OPT_NAME="N"
+opt_name="false"
+STR_ARG_NAME="NAME"
+DEFAULT_ARG_NAME="dboeger1-dotfiles"
+arg_name="${DEFAULT_ARG_NAME}"
+OPTSTR+="${CHAR_OPT_NAME}"
 
 CHAR_OPT_VERSION="V"
 opt_version="false"
@@ -92,10 +92,10 @@ USAGE=$(printf "${USAGE}"   \
     "${STR_ARG_CLEAN}"      \
     "${CHAR_OPT_FORCE}"     \
     "${CHAR_OPT_VERBOSE}"   \
-    "${CHAR_OPT_SRCDIR}"    \
-    "${STR_ARG_SRCDIR}"     \
-    "${CHAR_OPT_DESTDIR}"   \
-    "${STR_ARG_DESTDIR}"    \
+    "${CHAR_OPT_PROJDIR}"   \
+    "${STR_ARG_PROJDIR}"    \
+    "${CHAR_OPT_NAME}"      \
+    "${STR_ARG_NAME}"       \
     "${CHAR_OPT_VERSION}"   \
     "${STR_ARG_VERSION}"    \
     "${PROGRAM}"            \
@@ -131,51 +131,44 @@ Help options:
 
 Mode options:
 
-    -%c %s     Build the specified artifacts. Artifacts are built in the
-                    destination directory from sources in the source directory.
-                    By default, the current working directory is treated as both
-                    the source and destination directory, but alternative values
-                    may be specified with -%c and -%c, respectively. The
-                    %s argument specifies which artifacts to build. Valid
-                    values are "%s", "%s", "%s", and "%s". "%s" produces a
-                    bundle of the sources. "%s" and "%s" produce a package of
-                    the respective format from the source bundle. As such, if
-                    the source bundle is not found, both "%s" and "%s" first
-                    perform the "%s" build. By extension, "%s" produces all of
-                    the previously mentioned artifacts. If multiple instances of
-                    this option are provided, all specified artifacts are built.
+    -%c %s     Build the specified artifacts. Sources and artifacts are
+                    located within the project root directory, which can be
+                    specified with -%c. The %s argument specifies which
+                    artifacts to build. Valid values are "%s", "%s", "%s",
+                    and "%s". "%s" produces a bundle of the sources. Both
+                    "%s" and "%s" build the source bundle and a package of the
+                    respective format. "%s" produces all of the previously
+                    mentioned artifacts. If multiple instances of this option
+                    are provided, all specified artifacts are built. By default,
+                    if any conflicting artifacts are present, all builds fail
+                    without making any changes. This behavior can be changed
+                    with -%c.
 
-    -%c %s     Clean the specified build artifacts from the destination
-                    directory. By default, the current working directory is
-                    treated as the destination directory, but an alternative
-                    value may be specified with -%c. The %s argument
-                    specifies which artifacts to clean. Valid values are "%s",
-                    "%s", "%s", and "%s". "%s" removes the source bundle.
-                    "%s" and "%s" remove the respective package. "%s" removes
-                    all of the previously mentioned artifacts. If multiple
-                    instances of this option are provided, all specified
-                    artifacts are removed. If none of the build artifacts remain
-                    in the destination directory after performing all clean
-                    operations, the destination directory is also removed.
+    -%c %s     Clean the specified build artifacts from the project root
+                    directory, which can be specified with -%c. The %s
+                    argument specifies which artifacts to clean. Valid values
+                    are "%s", "%s", "%s", and "%s". "%s" removes the source
+                    bundle. "%s" and "%s" remove the respective package. "%s"
+                    removes all of the previously mentioned artifacts. If
+                    multiple instances of this option are provided, all
+                    specified artifacts are removed.
 
 Common mode modifier options:
 
-    -%c %s      Specify an alternative source directory containing sources
-                    to be built. By default, the current working directory is
-                    treated as the source directory.
+    -%c %s     Specify the project root directory. By default, the current
+                    working directory is used.
 
-    -%c %s     Specify an alternative destination directory for build
-                    artifacts. By default, the current working directory is
-                    treated as the destination directory.
+    -%c %s         Specify the name string of the sources being built. The
+                    default value is "%s".
 
-    -%c %s      Specify the version string of the sources being built. By
-                    default, "%s" is used.
+    -%c %s      Specify the version string of the sources being built. The
+                    default value is "%s".
 
 Build mode modifier options:
 
     -%c              Force rebuilding and overwriting of existing artifacts in
-                    the destination directory. Without this option, -%c does not
-                    overwrite existing artifact files.
+                    the destination directory. Without this option, builds fail
+                    in the presence of conflicting artifacts.
 
 Informational options:
 
@@ -188,8 +181,7 @@ HELP=$(printf "${HELP}"         \
     "${CHAR_OPT_HELP}"          \
     "${CHAR_OPT_BUILD}"         \
     "${STR_ARG_BUILD}"          \
-    "${CHAR_OPT_SRCDIR}"        \
-    "${CHAR_OPT_DESTDIR}"       \
+    "${CHAR_OPT_PROJDIR}"       \
     "${STR_ARG_BUILD}"          \
     "${STR_ARG_BUILD_SRC}"      \
     "${STR_ARG_BUILD_DEB}"      \
@@ -198,13 +190,11 @@ HELP=$(printf "${HELP}"         \
     "${STR_ARG_BUILD_SRC}"      \
     "${STR_ARG_BUILD_DEB}"      \
     "${STR_ARG_BUILD_RPM}"      \
-    "${STR_ARG_BUILD_DEB}"      \
-    "${STR_ARG_BUILD_RPM}"      \
-    "${STR_ARG_BUILD_SRC}"      \
     "${STR_ARG_BUILD_ALL}"      \
+    "${CHAR_OPT_FORCE}"         \
     "${CHAR_OPT_CLEAN}"         \
     "${STR_ARG_CLEAN}"          \
-    "${CHAR_OPT_DESTDIR}"       \
+    "${CHAR_OPT_PROJDIR}"       \
     "${STR_ARG_CLEAN}"          \
     "${STR_ARG_CLEAN_SRC}"      \
     "${STR_ARG_CLEAN_DEB}"      \
@@ -214,15 +204,15 @@ HELP=$(printf "${HELP}"         \
     "${STR_ARG_CLEAN_DEB}"      \
     "${STR_ARG_CLEAN_RPM}"      \
     "${STR_ARG_CLEAN_ALL}"      \
-    "${CHAR_OPT_SRCDIR}"        \
-    "${STR_ARG_SRCDIR}"         \
-    "${CHAR_OPT_DESTDIR}"       \
-    "${STR_ARG_DESTDIR}"        \
+    "${CHAR_OPT_PROJDIR}"       \
+    "${STR_ARG_PROJDIR}"        \
+    "${CHAR_OPT_NAME}"          \
+    "${STR_ARG_NAME}"           \
+    "${DEFAULT_ARG_NAME}"       \
     "${CHAR_OPT_VERSION}"       \
     "${STR_ARG_VERSION}"        \
     "${DEFAULT_ARG_VERSION}"    \
     "${CHAR_OPT_FORCE}"         \
-    "${CHAR_OPT_BUILD}"         \
     "${CHAR_OPT_VERBOSE}"       \
 )
 
@@ -259,13 +249,13 @@ do
     "${CHAR_OPT_VERBOSE}")
         opt_verbose="true"
         ;;
-    "${CHAR_OPT_SRCDIR}")
-        opt_srcdir="true"
-        arg_srcdir="${OPTARG}"
+    "${CHAR_OPT_PROJDIR}")
+        opt_projdir="true"
+        arg_projdir="${OPTARG}"
         ;;
-    "${CHAR_OPT_DESTDIR}")
-        opt_destdir="true"
-        arg_destdir="${OPTARG}"
+    "${CHAR_OPT_NAME}")
+        opt_name="true"
+        arg_name="${OPTARG}"
         ;;
     "${CHAR_OPT_VERSION}")
         opt_version="true"
