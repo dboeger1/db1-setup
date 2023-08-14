@@ -341,6 +341,11 @@ then
 
     if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all" ]
     then
+        sed \
+            -e "s/^Name:\$/Name: ${arg_name}" \
+            -e "s/^Version:\$/Version: ${arg_version}" \
+            > ${rpmbuild_specs_dir}/${arg_name}-${arg_version}.spec
+
         mkdir -p \
             ${rpmbuild_build_dir} \
             ${rpmbuild_buildroot_dir} \

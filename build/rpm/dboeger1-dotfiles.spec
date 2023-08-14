@@ -1,8 +1,8 @@
 %{!?prefix_app: %global prefix_app /opt}
 %global app_dir %{prefix_app}/dboeger1-dotfiles
 
-Name: dboeger1-dotfiles
-Version: 0.0.1
+Name:
+Version:
 Release: 1%{?dist}
 Summary: Collection of GitHub user dboeger1's personal configuration files.
 
