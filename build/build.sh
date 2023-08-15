@@ -11,6 +11,7 @@ PROGRAM_NAME="$(basename ${PROGRAM_REL_PATH})"
 PROGRAM_DIR="$(cd ${PROGRAM_REL_DIR} && pwd)"
 PROGRAM_PATH="${PROGRAM_DIR}/${PROGRAM_NAME}"
 
+PROJECT_NAME="dboeger1-dotfiles"
 PROJECT_ROOT_DIR="$(dirname ${PROGRAM_DIR})"
 PROJECT_SRC_DIR="${PROJECT_ROOT_DIR}/src"
 PROJECT_BUILD_DIR="${PROJECT_ROOT_DIR}/build"
@@ -209,9 +210,9 @@ then
 fi
 
 # TODO: Validate arg_version.
-src_name="${arg_name}-${arg_version}"
+src_name="${PROJECT_NAME}-${arg_version}"
 src_file_name="${src_name}.tar.gz"
-src_file_path="${BUILD_SRC_DIR}/${src_file}"
+src_file_path="${BUILD_SRC_DIR}/${src_file_name}"
 
 dpkg_src_file_path="${DPKG_DIR}/${src_file_name}"
 
@@ -245,7 +246,7 @@ then
         ${RPMBUILD_SRPMS_DIR}
     cp ${src_file_path} ${rpmbuild_src_file_path}
     sed \
-        -e "s#^Name:\$#Name: ${arg_name}#" \
+        -e "s#^Name:\$#Name: ${PROJECT_NAME}#" \
         -e "s#^Version:\$#Version: ${arg_version}#" \
         -e "s#^Source0:\$#Source0: ${rpmbuild_src_file_path}#" \
         ${RPM_SPEC_FILE_PATH} > ${RPMBUILD_SPEC_FILE_PATH}
@@ -259,7 +260,7 @@ fi
 #
 if [ "${opt_clean}" = "true" ]
 then
-    for dir in "${RPMBUILD_DIR}" "${DEB_DIR}" "${BUILD_SRC_DIR}"
+    for dir in "${RPMBUILD_DIR}" "${DPKG_DIR}" "${BUILD_SRC_DIR}"
     do
         if [ -e "${dir}" ]
         then
