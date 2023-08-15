@@ -2,10 +2,40 @@
 
 
 #
-# Basic program information.
+# Basic information and constants.
 #
-PROGRAM="$(basename ${0})"
-PWD="$(pwd)"
+PROGRAM_REL_PATH="${0}"
+PROGRAM_REL_DIR="$(dirname ${PROGRAM_REL_PATH})"
+
+PROGRAM_NAME="$(basename ${PROGRAM_REL_PATH})"
+PROGRAM_DIR="$(cd ${PROGRAM_REL_DIR} && pwd)"
+PROGRAM_PATH="${PROGRAM_DIR}/${PROGRAM_NAME}"
+
+PROJECT_ROOT_DIR="$(dirname ${PROGRAM_DIR})"
+PROJECT_SRC_DIR="${PROJECT_ROOT_DIR}/src"
+PROJECT_BUILD_DIR="${PROJECT_ROOT_DIR}/build"
+
+BUILD_SRC_DIR="${PROJECT_BUILD_DIR}/src"
+BUILD_DEB_DIR="${PROJECT_BUILD_DIR}/deb"
+BUILD_RPM_DIR="${PROJECT_BUILD_DIR}/rpm"
+
+DPKG_DIR="${BUILD_DEB_DIR}/DEB"
+
+RPMBUILD_DIR="${BUILD_RPM_DIR}/rpmbuild"
+RPMBUILD_BUILD_DIR="${RPMBUILD_DIR}/BUILD"
+RPMBUILD_BUILDROOT_DIR="${RPMBUILD_DIR}/BUILDROOT"
+RPMBUILD_RPMS_DIR="${RPMBUILD_DIR}/RPMS"
+RPMBUILD_SOURCES_DIR="${RPMBUILD_DIR}/SOURCES"
+RPMBUILD_SPECS_DIR="${RPMBUILD_DIR}/SPECS"
+RPMBUILD_SRPMS_DIR="${RPMBUILD_DIR}/SRPMS"
+
+DEB_CONTROL_FILE_NAME="control"
+DEB_CONTROL_FILE_PATH="${BUILD_DEB_DIR}/${DEB_CONTROL_FILE_NAME}"
+DPKG_CONTROL_FILE_PATH="${DPKG_DIR}/${DEB_CONTROL_FILE_NAME}"
+
+RPM_SPEC_FILE_NAME="name.spec"
+RPM_SPEC_FILE_PATH="${BUILD_RPM_DIR}/${RPM_SPEC_FILE_NAME}"
+RPMBUILD_SPEC_FILE_PATH="${RPMBUILD_SPECS_DIR}/${RPM_SPEC_FILE_NAME}"
 
 
 #
@@ -23,14 +53,7 @@ OPTSTR+="${CHAR_OPT_USAGE}"
 
 CHAR_OPT_BUILD="b"
 opt_build="false"
-STR_ARG_BUILD="ARTIFACT"
-STR_ARG_BUILD_SRC="src"
-STR_ARG_BUILD_DEB="deb"
-STR_ARG_BUILD_RPM="rpm"
-STR_ARG_BUILD_ALL="all"
-DEFAULT_ARG_BUILD=""
-arg_build="${DEFAULT_ARG_BUILD}"
-OPTSTR+="${CHAR_OPT_BUILD}:"
+OPTSTR+="${CHAR_OPT_BUILD}"
 
 CHAR_OPT_CLEAN="c"
 opt_clean="false"
@@ -39,24 +62,6 @@ OPTSTR+="${CHAR_OPT_CLEAN}"
 CHAR_OPT_FORCE="f"
 opt_force="false"
 OPTSTR+="${CHAR_OPT_FORCE}"
-
-CHAR_OPT_VERBOSE="v"
-opt_verbose="false"
-OPTSTR+="${CHAR_OPT_VERBOSE}"
-
-CHAR_OPT_PROJDIR="d"
-opt_projdir="false"
-STR_ARG_PROJDIR="PROJ_DIR"
-DEFAULT_ARG_PROJDIR="${PWD}"
-arg_projdir="${DEFAULT_ARG_PROJDIR}"
-OPTSTR+="${CHAR_OPT_PROJDIR}:"
-
-CHAR_OPT_NAME="N"
-opt_name="false"
-STR_ARG_NAME="NAME"
-DEFAULT_ARG_NAME="dboeger1-dotfiles"
-arg_name="${DEFAULT_ARG_NAME}"
-OPTSTR+="${CHAR_OPT_NAME}"
 
 CHAR_OPT_VERSION="V"
 opt_version="false"
@@ -67,134 +72,67 @@ OPTSTR+="${CHAR_OPT_VERSION}:"
 
 
 #
-# Usage statement.
+# Help messages.
 #
-USAGE="$(cat << END
-Usage: %s {-%c | -%c | -%c %s | -%c} [-%c%c]
-        [-%c %s] [-%c %s] [-%c %s]
-    Run \"%s -%c\" for more help.
-END
-)"
-USAGE=$(printf "${USAGE}"   \
-    "${PROGRAM}"            \
+USAGE=$(printf \
+    "Usage: %s {-%c|-%c|-%c|-%c} [-%c] [-%c %s]" \
+    "${PROGRAM_NAME}"       \
     "${CHAR_OPT_HELP}"      \
     "${CHAR_OPT_USAGE}"     \
     "${CHAR_OPT_BUILD}"     \
-    "${STR_ARG_BUILD}"      \
     "${CHAR_OPT_CLEAN}"     \
     "${CHAR_OPT_FORCE}"     \
-    "${CHAR_OPT_VERBOSE}"   \
-    "${CHAR_OPT_PROJDIR}"   \
-    "${STR_ARG_PROJDIR}"    \
-    "${CHAR_OPT_NAME}"      \
-    "${STR_ARG_NAME}"       \
     "${CHAR_OPT_VERSION}"   \
     "${STR_ARG_VERSION}"    \
-    "${PROGRAM}"            \
-    "${CHAR_OPT_HELP}"      \
+)
+
+HINT=$(printf \
+    "Run \"%s -%c\" for more help." \
+    "${PROGRAM_NAME}"   \
+    "${CHAR_OPT_HELP}"  \
+)
+
+HELP_FORMAT=$(cat << END
+
+Help:
+    -%c          Display this help message.
+    -%c          Display a brief usage statement.
+
+Actions:
+    -%c          Build all artifacts.
+    -%c          Clean all artifacts.
+
+Modifiers:
+    -%c          Force rebuilding of artifacts.
+    -%c %s  Specify version of sources (default="%s").
+END
+)
+HELP=$(printf "${HELP_FORMAT}"  \
+    "${CHAR_OPT_HELP}"          \
+    "${CHAR_OPT_USAGE}"         \
+    "${CHAR_OPT_BUILD}"         \
+    "${CHAR_OPT_CLEAN}"         \
+    "${CHAR_OPT_FORCE}"         \
+    "${CHAR_OPT_VERSION}"       \
+    "${STR_ARG_VERSION}"        \
+    "${DEFAULT_ARG_VERSION}"    \
 )
 
 exit_usage()
 {
-    echo "${USAGE}"
+    printf "${USAGE}\n${HINT}\n"
     exit 0
 }
 
 exit_usage_err()
 {
-    echo "${USAGE}" 1>&2
+    printf "${USAGE}\n${HINT}\n" 1>&2
     exit 1
 }
 
-
-#
-# Help message.
-#
-HELP="$(cat << END
-${USAGE}
-
-Help options:
-
-    -%c              Display this help message. This option overrides all other
-                    options.
-
-    -%c              Display a brief usage statement. This option overrides all
-                    other options except for -%c.
-
-Mode options:
-
-    -%c %s     Build the specified artifacts. Sources and artifacts are
-                    located within the project root directory, which can be
-                    specified with -%c. The %s argument specifies which
-                    artifacts to build. Valid values are "%s", "%s", "%s",
-                    and "%s". "%s" produces a bundle of the sources. Both
-                    "%s" and "%s" build the source bundle and a package of the
-                    respective format. "%s" produces all of the previously
-                    mentioned artifacts. If multiple instances of this option
-                    are provided, all specified artifacts are built. By default,
-                    if any conflicting artifacts are present, all builds fail
-                    without making any changes. This behavior can be changed
-                    with -%c.
-
-    -%c              Clean all build artifacts from the project root directory,
-                    which can be specified with -%c.
-
-Common mode modifier options:
-
-    -%c %s     Specify the project root directory. By default, the current
-                    working directory is used.
-
-    -%c %s         Specify the name string of the sources being built. The
-                    default value is "%s".
-
-    -%c %s      Specify the version string of the sources being built. The
-                    default value is "%s".
-
-Build mode modifier options:
-
-    -%c              Force rebuilding and overwriting of existing artifacts in
-                    the destination directory. Without this option, builds fail
-                    in the presence of conflicting artifacts.
-
-Informational options:
-
-    -%c              Enable verbose output.
-END
-)"
-HELP=$(printf "${HELP}"         \
-    "${CHAR_OPT_HELP}"          \
-    "${CHAR_OPT_USAGE}"         \
-    "${CHAR_OPT_HELP}"          \
-    "${CHAR_OPT_BUILD}"         \
-    "${STR_ARG_BUILD}"          \
-    "${CHAR_OPT_PROJDIR}"       \
-    "${STR_ARG_BUILD}"          \
-    "${STR_ARG_BUILD_SRC}"      \
-    "${STR_ARG_BUILD_DEB}"      \
-    "${STR_ARG_BUILD_RPM}"      \
-    "${STR_ARG_BUILD_ALL}"      \
-    "${STR_ARG_BUILD_SRC}"      \
-    "${STR_ARG_BUILD_DEB}"      \
-    "${STR_ARG_BUILD_RPM}"      \
-    "${STR_ARG_BUILD_ALL}"      \
-    "${CHAR_OPT_FORCE}"         \
-    "${CHAR_OPT_CLEAN}"         \
-    "${CHAR_OPT_PROJDIR}"       \
-    "${CHAR_OPT_PROJDIR}"       \
-    "${STR_ARG_PROJDIR}"        \
-    "${CHAR_OPT_NAME}"          \
-    "${STR_ARG_NAME}"           \
-    "${DEFAULT_ARG_NAME}"       \
-    "${CHAR_OPT_VERSION}"       \
-    "${STR_ARG_VERSION}"        \
-    "${DEFAULT_ARG_VERSION}"    \
-    "${CHAR_OPT_FORCE}"         \
-    "${CHAR_OPT_VERBOSE}"       \
-)
-
 exit_help()
 {
-    echo "${HELP}"
+    printf "${USAGE}\n${HELP}\n"
     exit 0
 }
 
@@ -213,24 +151,12 @@ do
         ;;
     "${CHAR_OPT_BUILD}")
         opt_build="true"
-        arg_build="${OPTARG}"
         ;;
     "${CHAR_OPT_CLEAN}")
         opt_clean="true"
         ;;
     "${CHAR_OPT_FORCE}")
         opt_force="true"
-        ;;
-    "${CHAR_OPT_VERBOSE}")
-        opt_verbose="true"
-        ;;
-    "${CHAR_OPT_PROJDIR}")
-        opt_projdir="true"
-        arg_projdir="${OPTARG}"
-        ;;
-    "${CHAR_OPT_NAME}")
-        opt_name="true"
-        arg_name="${OPTARG}"
         ;;
     "${CHAR_OPT_VERSION}")
         opt_version="true"
@@ -276,96 +202,54 @@ fi
 #
 if [ "${opt_build}" = "true" ] && [ "${opt_clean}" = "true" ]
 then
-    echo "-${CHAR_OPT_BUILD} and -${CHAR_OPT_CLEAN} are mutually exclusive." \
-        1>&2
-    exit_usage_err
-fi
-
-if
-    [ "${opt_build}" = "true" ] &&
-    [ "${arg_build}" != "src" ] &&
-    [ "${arg_build}" != "deb" ] &&
-    [ "${arg_build}" != "rpm" ] &&
-    [ "${arg_build}" != "all" ]
-then
-    echo "Invalid -${CHAR_OPT_BUILD} argument: \"${arg_build}\"" 1>&2
-    printf "Must be one of: {\"%s\", \"%s\", \"%s\", \"%s\"}\n" \
-        "${STR_ARG_BUILD_SRC}" \
-        "${STR_ARG_BUILD_DEB}" \
-        "${STR_ARG_BUILD_RPM}" \
-        "${STR_ARG_BUILD_ALL}" \
-        1>&2
-    exit_usage_err
-fi
-
-if [ "${opt_projdir}" = "true" ] && [ ! -d "${arg_projdir}" ]
-then
-    echo "Project directory does not exist: \"${arg_projdir}\"" 1>&2
+    printf "-%c and -%c are mutually exclusive.\n" \
+        "${CHAR_OPT_BUILD}" \
+        "${CHAR_OPT_CLEAN}" 1>&2
     exit_usage_err
 fi
 
 # TODO: Validate arg_version.
+src_name="${arg_name}-${arg_version}"
+src_file_name="${src_name}.tar.gz"
+src_file_path="${BUILD_SRC_DIR}/${src_file}"
+
+dpkg_src_file_path="${DPKG_DIR}/${src_file_name}"
+
+rpmbuild_src_file_path="${RPMBUILD_SOURCES_DIR}/${src_file_name}"
 
 
 #
 # Build.
 #
-proj_src_dir="${arg_projdir}/src"
-
-proj_build_dir="${arg_projdir}/build"
-
-build_src_dir="${proj_build_dir}/src"
-src_name="${arg_name}-${arg_version}"
-src_file_name="${src_name}.tar.gz"
-src_file="${build_src_dir}/${src_file_name}"
-
-build_deb_dir="${proj_build_dir}/deb"
-deb_dir="${build_deb_dir}/DEB"
-
-build_rpm_dir="${proj_build_dir}/rpm"
-rpmbuild_dir="${build_rpm_dir}/rpmbuild"
-rpmbuild_build_dir="${rpmbuild_dir}/BUILD"
-rpmbuild_buildroot_dir="${rpmbuild_dir}/BUILDROOT"
-rpmbuild_rpms_dir="${rpmbuild_dir}/RPMS"
-rpmbuild_sources_dir="${rpmbuild_dir}/SOURCES"
-rpmbuild_specs_dir="${rpmbuild_dir}/SPECS"
-rpmbuild_srpms_dir="${rpmbuild_dir}/SRPMS"
-rpmbuild_src_file="${rpmbuild_sources_dir}/${src_file_name}"
-
 if [ "${opt_build}" = "true" ]
 then
-    mkdir -p ${build_src_dir}
-    tar -c -C "${proj_src_dir}" -f "${src_file}" \
+    # src
+    mkdir -p ${BUILD_SRC_DIR}
+    tar -c -C "${PROJECT_SRC_DIR}" -f "${src_file_path}" \
         --transform="s#^#${src_name}/#" \
         neovim tmux
 
-    if [ "${arg_build}" = "deb" ] || [ "${arg_build}" = "all" ]
-    then
-        mkdir -p ${deb_dir}
-    fi
+    # deb
+    mkdir -p ${DPKG_DIR}
+    cp ${src_file_path} ${dpkg_src_file_path}
+    # TODO: Replace following line with actual file modification and packaging.
+    cp ${DEB_CONTROL_FILE_PATH} ${DPKG_CONTROL_FILE_PATH}
 
-    if [ "${arg_build}" = "rpm" ] || [ "${arg_build}" = "all" ]
-    then
-        mkdir -p \
-            ${rpmbuild_build_dir} \
-            ${rpmbuild_buildroot_dir} \
-            ${rpmbuild_rpms_dir} \
-            ${rpmbuild_sources_dir} \
-            ${rpmbuild_specs_dir} \
-            ${rpmbuild_srpms_dir}
-
-        cp ${src_file} ${rpmbuild_src_file}
-
-        sed \
-            -e "s#^Name:\$#Name: ${arg_name}#" \
-            -e "s#^Version:\$#Version: ${arg_version}#" \
-            -e "s#^Source0:\$#Source0: ${rpmbuild_src_file}#" \
-            ${build_rpm_dir}/name.spec \
-            > ${rpmbuild_specs_dir}/${arg_name}.spec
-
-        rpmbuild --define "_topdir ${rpmbuild_dir}" -ba \
-            ${rpmbuild_specs_dir}/${arg_name}.spec
-    fi
+    # rpm
+    mkdir -p \
+        ${RPMBUILD_BUILD_DIR}       \
+        ${RPMBUILD_BUILDROOT_DIR}   \
+        ${RPMBUILD_RPMS_DIR}        \
+        ${RPMBUILD_SOURCES_DIR}     \
+        ${RPMBUILD_SPECS_DIR}       \
+        ${RPMBUILD_SRPMS_DIR}
+    cp ${src_file_path} ${rpmbuild_src_file_path}
+    sed \
+        -e "s#^Name:\$#Name: ${arg_name}#" \
+        -e "s#^Version:\$#Version: ${arg_version}#" \
+        -e "s#^Source0:\$#Source0: ${rpmbuild_src_file_path}#" \
+        ${RPM_SPEC_FILE_PATH} > ${RPMBUILD_SPEC_FILE_PATH}
+    rpmbuild --define "_topdir ${RPMBUILD_DIR}" -ba "${RPMBUILD_SPEC_FILE_PATH}"
 
     exit 0
 fi
@@ -375,38 +259,19 @@ fi
 #
 if [ "${opt_clean}" = "true" ]
 then
-    if [ -e "${rpmbuild_dir}" ]
-    then
-        if [ ! -d "${rpmbuild_dir}" ]
+    for dir in "${RPMBUILD_DIR}" "${DEB_DIR}" "${BUILD_SRC_DIR}"
+    do
+        if [ -e "${dir}" ]
         then
-            echo "Cannot clean non-directory: \"${rpmbuild_dir}\"" 1>&2
-            exit 1
+            if [ ! -d "${dir}" ]
+            then
+                printf "Cannot clean non-directory: \"%s\"\n" "${dir}" 1>&2
+                exit 1
+            fi
+
+            rm -rf ${dir}
         fi
-
-        rm -rf ${rpmbuild_dir}
-    fi
-
-    if [ -e "${deb_dir}" ]
-    then
-        if [ ! -d "${deb_dir}" ]
-        then
-            echo "Cannot clean non-directory: \"${deb_dir}\"" 1>&2
-            exit 1
-        fi
-
-        rm -rf ${deb_dir}
-    fi
-
-    if [ -e "${build_src_dir}" ]
-    then
-        if [ ! -d "${build_src_dir}" ]
-        then
-            echo "Cannot clean non-directory: \"${build_src_dir}\"" 1>&2
-            exit 1
-        fi
-
-        rm -rf ${build_src_dir}
-    fi
+    done
 
     exit 0
 fi
