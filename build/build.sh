@@ -88,12 +88,12 @@ USAGE=$(printf \
 )
 
 HINT=$(printf \
-    "Run \"%s -%c\" for more help." \
+    "        Run \"%s -%c\" for more help." \
     "${PROGRAM_NAME}"   \
     "${CHAR_OPT_HELP}"  \
 )
 
-HELP_FORMAT=$(cat << END
+HELP=$(printf "$(cat << END
 
 Help:
     -%c          Display this help message.
@@ -107,8 +107,7 @@ Modifiers:
     -%c          Force rebuilding of artifacts.
     -%c %s  Specify version of sources (default="%s").
 END
-)
-HELP=$(printf "${HELP_FORMAT}"  \
+    )" \
     "${CHAR_OPT_HELP}"          \
     "${CHAR_OPT_USAGE}"         \
     "${CHAR_OPT_BUILD}"         \
