@@ -1,10 +1,7 @@
 #![allow(dead_code)]
 
 
-use std::{
-    path::PathBuf,
-    str::FromStr,
-};
+use std::path::PathBuf;
 
 
 #[derive(Debug)]
@@ -14,43 +11,83 @@ struct PathAB {
 }
 
 fn main() {
-    let file_copies: [PathAB; 3] = [
-        PathAB {
-            a: PathBuf::from_str("tmux/.tmux.conf").unwrap(),
-            b: PathBuf::from_str("/root/tmux/.tmux.conf").unwrap(),
-        },
-        PathAB {
-            a: PathBuf::from_str("neovim/init.lua").unwrap(),
-            b: PathBuf::from_str("/root/.config/nvim/init.lua").unwrap(),
-        },
-        PathAB {
-            a: PathBuf::from_str("neovim/lazy-lock.json").unwrap(),
-            b: PathBuf::from_str("/root/.config/nvim/lazy-lock.json").unwrap(),
-        },
-    ];
+    // Output from "rpm -qlp <.rpm>".
+    let lines = r#"
+        /opt/dboeger1-dotfiles/neovim/init.lua
+        /opt/dboeger1-dotfiles/neovim/lazy-lock.json
+        /opt/dboeger1-dotfiles/neovim/lua/.luarc.json
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_cmp.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_kanagawa.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_lualine.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_mason.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_nightfox.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_snippy.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_telescope.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_telescope_fzf_native.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_treesitter.lua
+        /opt/dboeger1-dotfiles/neovim/lua/plugins/plugin_netrw.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/indentation.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/information.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/key_maps.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/tabs.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/themes.lua
+        /opt/dboeger1-dotfiles/neovim/lua/settings/windows.lua
+        /opt/dboeger1-dotfiles/tmux/.tmux.conf
+    "#;
 
-    for file_copy in file_copies {
-        println!("Copying File");
+    lines
+        .lines()
+        .filter_map(|line| {
+            let line = line.trim();
+            match line.split_once("dboeger1-dotfiles/") {
+                None => None,
+                Some((_, suffix)) => {
+                    let destination: String;
+                    if suffix.starts_with("neovim/") {
+                        destination = suffix.replacen(
+                            "neovim",
+                            "/root/.config/nvim",
+                            1);
+                    } else if suffix.starts_with("tmux/") {
+                        destination = suffix.replacen(
+                            "tmux",
+                            "/root",
+                            1);
+                    } else {
+                        return None;
+                    }
 
-        if file_copy.a.try_exists().unwrap() != true {
-            println!(
-                "\tSource does not exist: \"{}\"",
-                file_copy.a.to_string_lossy()
-            );
-            continue;
-        }
+                    Some(PathAB {
+                        a: PathBuf::from(line),
+                        b: PathBuf::from(destination),
+                    })
+                },
+            }
+        })
+        .for_each(|file_copy| {
+            println!("Copying File");
+            println!("\tSource: \"{}\"", file_copy.a.to_string_lossy());
+            println!("\tDestination: \"{}\"", file_copy.b.to_string_lossy());
 
-        if file_copy.b.try_exists().unwrap() == true {
-            println!(
-                "\tDestination already exists: \"{}\"",
-                file_copy.b.to_string_lossy()
-            );
-            continue;
-        }
+            if file_copy.a.try_exists().unwrap() != true {
+                println!(
+                    "\t\tSource does not exist: \"{}\"",
+                    file_copy.a.to_string_lossy()
+                );
+                return;
+            }
 
-        println!("    Source: \"{}\"", file_copy.a.to_string_lossy());
-        println!("    Destination: \"{}\"", file_copy.b.to_string_lossy());
-    }
+            if file_copy.b.try_exists().unwrap() == true {
+                println!(
+                    "\t\tDestination already exists: \"{}\"",
+                    file_copy.b.to_string_lossy()
+                );
+                return;
+            }
+
+            //let bytes_copied = fs::copy(file_copy.a, file_copy.b).unwrap();
+            //println!("\t\tbytes_copied: {}", bytes_copied);
+        });
 }
 
 
