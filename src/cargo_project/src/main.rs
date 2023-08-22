@@ -4,36 +4,9 @@
 use std::path::PathBuf;
 
 
-#[derive(Debug)]
-struct PathAB {
-    a: PathBuf,
-    b: PathBuf,
-}
-
 fn main() {
     // Output from "rpm -qlp <.rpm>".
-    let lines = r#"
-        /opt/dboeger1-dotfiles/neovim/init.lua
-        /opt/dboeger1-dotfiles/neovim/lazy-lock.json
-        /opt/dboeger1-dotfiles/neovim/lua/.luarc.json
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_cmp.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_kanagawa.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_lualine.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_mason.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_nightfox.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_snippy.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_telescope.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_telescope_fzf_native.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/lazy/plugin_treesitter.lua
-        /opt/dboeger1-dotfiles/neovim/lua/plugins/plugin_netrw.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/indentation.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/information.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/key_maps.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/tabs.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/themes.lua
-        /opt/dboeger1-dotfiles/neovim/lua/settings/windows.lua
-        /opt/dboeger1-dotfiles/tmux/.tmux.conf
-    "#;
+    let lines = include_str!("files.txt");
 
     lines
         .lines()
@@ -57,30 +30,30 @@ fn main() {
                         return None;
                     }
 
-                    Some(PathAB {
-                        a: PathBuf::from(line),
-                        b: PathBuf::from(destination),
-                    })
+                    Some((
+                        PathBuf::from(line),
+                        PathBuf::from(destination),
+                    ))
                 },
             }
         })
-        .for_each(|file_copy| {
+        .for_each(|(source, destination)| {
             println!("Copying File");
-            println!("\tSource: \"{}\"", file_copy.a.to_string_lossy());
-            println!("\tDestination: \"{}\"", file_copy.b.to_string_lossy());
+            println!("\tSource: \"{}\"", source.to_string_lossy());
+            println!("\tDestination: \"{}\"", destination.to_string_lossy());
 
-            if file_copy.a.try_exists().unwrap() != true {
+            if source.try_exists().unwrap() != true {
                 println!(
                     "\t\tSource does not exist: \"{}\"",
-                    file_copy.a.to_string_lossy()
+                    source.to_string_lossy()
                 );
                 return;
             }
 
-            if file_copy.b.try_exists().unwrap() == true {
+            if destination.try_exists().unwrap() == true {
                 println!(
                     "\t\tDestination already exists: \"{}\"",
-                    file_copy.b.to_string_lossy()
+                    destination.to_string_lossy()
                 );
                 return;
             }
