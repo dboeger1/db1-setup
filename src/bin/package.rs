@@ -1,5 +1,6 @@
 use clap::Parser;
 use dboeger1_dotfiles::*;
+use std::fs::remove_dir_all;
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_CRATE_NAME"))]
@@ -9,38 +10,27 @@ struct Args {
     clean: bool,
 }
 
-fn main() {
+fn main() -> Result<(), u8> {
     let args = Args::parse();
 
     match args.clean {
-        true => clean(),
-        false => build(),
+        true => {
+            println!("Cleaning...");
+            match remove_dir_all(PROJECT_PACKAGES_DIR.as_path()).is_ok() {
+                true => Ok(()),
+                false => Err(1),
+            }
+        },
+        false => {
+            println!("Building...");
+            match PROJECT_PACKAGES_DIR.exists() {
+                true => Err(1),
+                false => Ok(()),
+            }
+        },
     }
-
-    println!("{}", ASSETS_FILES_CSV_FILE.to_string_lossy());
 }
 
-fn clean() {
-    println!("Cleaning...");
-//    for dir in "${RPMBUILD_DIR}" "${DPKG_DIR}" "${BUILD_SRC_DIR}"
-//    do
-//        if [ -e "${dir}" ]
-//        then
-//            if [ ! -d "${dir}" ]
-//            then
-//                printf "Cannot clean non-directory: \"%s\"\n" "${dir}" 1>&2
-//                exit 1
-//            fi
-//
-//            rm -rf ${dir}
-//        fi
-//    done
-//
-//    exit 0
-}
-
-fn build() {
-    println!("Building...");
 //    # src
 //    mkdir -p ${BUILD_SRC_DIR}
 //    tar -c -C "${PROJECT_SRC_DIR}" -f "${src_file_path}" \
@@ -68,4 +58,3 @@ fn build() {
 //        -e "s#^Source0:\$#Source0: ${rpmbuild_src_file_path}#" \
 //        ${RPM_SPEC_FILE_PATH} > ${RPMBUILD_SPEC_FILE_PATH}
 //    rpmbuild --define "_topdir ${RPMBUILD_DIR}" -ba "${RPMBUILD_SPEC_FILE_PATH}"
-}
