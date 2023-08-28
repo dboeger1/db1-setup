@@ -50,6 +50,8 @@ lazy_static! {
     // Asset paths.
     pub static ref PROJECT_ASSETS_DIR: PathBuf =
         PROJECT_ROOT_DIR.join("assets");
+    pub static ref PROJECT_ASSETS_PLATFORM_DIR: PathBuf =
+        PROJECT_ASSETS_DIR.join("platform");
 
     pub static ref PROJECT_ASSETS_NEOVIM_DIR: PathBuf =
         PROJECT_ASSETS_DIR.join("neovim");

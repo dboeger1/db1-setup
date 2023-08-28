@@ -17,7 +17,7 @@ fn main() {
         false => build(),
     }
 
-    println!("{}", PACKAGES_RPMBUILD_SPEC_FILE.to_string_lossy());
+    println!("{}", ASSETS_FILES_CSV_FILE.to_string_lossy());
 }
 
 fn clean() {

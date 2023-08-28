@@ -1,8 +1,9 @@
 use crate::{
+    CARGO_NAME,
     FILES_CSV_NAME,
     NAME_VERSION,
-    PROJECT_ASSETS_DIR,
-    PROJECT_PACKAGES_DIR, CARGO_NAME,
+    PROJECT_ASSETS_PLATFORM_DIR,
+    PROJECT_PACKAGES_DIR,
 };
 use std::path::PathBuf;
 
@@ -12,7 +13,7 @@ pub const PLATFORM_NAME: &str = "linux";
 lazy_static! {
     // Asset paths.
     pub static ref ASSETS_DIR: PathBuf =
-        PROJECT_ASSETS_DIR.join(PLATFORM_NAME);
+        PROJECT_ASSETS_PLATFORM_DIR.join(PLATFORM_NAME);
     pub static ref ASSETS_FILES_CSV_FILE: PathBuf =
         ASSETS_DIR.join(FILES_CSV_NAME);
 
