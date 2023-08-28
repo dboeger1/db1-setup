@@ -59,15 +59,8 @@ lazy_static! {
     pub static ref PROJECT_ASSETS_TMUX_DIR: PathBuf =
         PROJECT_ASSETS_DIR.join("tmux");
 
-    pub static ref PROJECT_ASSETS_DEB_DIR: PathBuf =
-        PROJECT_ASSETS_DIR.join("deb");
-    pub static ref PROJECT_ASSETS_DEB_CONTROL_FILE: PathBuf =
-        PROJECT_ASSETS_DEB_DIR.join("control");
-
-    pub static ref PROJECT_ASSETS_RPM_DIR: PathBuf =
-        PROJECT_ASSETS_DIR.join("rpm");
-    pub static ref PROJECT_ASSETS_RPM_SPEC_FILE: PathBuf =
-        PROJECT_ASSETS_RPM_DIR.join("name.spec");
+    pub static ref PROJECT_SRC_DIR: PathBuf =
+        PROJECT_ROOT_DIR.join("src");
 
     // Package paths.
     pub static ref PROJECT_PACKAGES_DIR: PathBuf =
