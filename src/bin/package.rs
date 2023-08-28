@@ -33,9 +33,16 @@ fn main() -> Result<(), u8> {
             }
             let _ = Command::new("tar")
                 .args([
-                    "-c",
-                    "-C", &PROJECT_ASSETS_DIR.to_string_lossy(),
-                    "-f", &PACKAGES_SRC_FILE.to_string_lossy(),
+                    "--create",
+                    "--gzip",
+                    format!(
+                        "--directory={}",
+                        &PROJECT_ASSETS_DIR.to_string_lossy()
+                    ).as_str(),
+                    format!(
+                        "--file={}",
+                        &PACKAGES_SRC_FILE.to_string_lossy()
+                    ).as_str(),
                     format!(
                         "--transform=s#^#{}/#",
                         CARGO_NAME
