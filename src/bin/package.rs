@@ -1,4 +1,5 @@
 use clap::Parser;
+use dboeger1_dotfiles::*;
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_CRATE_NAME"))]
@@ -11,29 +12,13 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if args.clean {
-        clean();
-        return;
+    match args.clean {
+        true => clean(),
+        false => build(),
     }
 
-    build();
-
-    dboeger1_dotfiles::FILES_LINUX
-        .iter()
-        .for_each(|(source, destination)| {
-            println!();
-            println!("Source: \"{}\"", source);
-            println!("Destination: \"{}\"", destination);
-        });
+    println!("{}", PACKAGES_RPMBUILD_SPEC_FILE.to_string_lossy());
 }
-
-//src_name="${PROJECT_NAME}-${arg_version}"
-//src_file_name="${src_name}.tar.gz"
-//src_file_path="${BUILD_SRC_DIR}/${src_file_name}"
-//
-//dpkg_src_file_path="${DPKG_DIR}/${src_file_name}"
-//
-//rpmbuild_src_file_path="${RPMBUILD_SOURCES_DIR}/${src_file_name}"
 
 fn clean() {
     println!("Cleaning...");
