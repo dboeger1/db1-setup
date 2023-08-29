@@ -1,6 +1,7 @@
 use clap::Parser;
 use dboeger1_dotfiles::*;
-use std::{fs::{create_dir_all, remove_dir_all, copy}, process::Command};
+use std::{fs::{create_dir_all, remove_dir_all, copy, File}, process::{Command, Stdio}, io::Write};
+
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_CRATE_NAME"))]
@@ -9,6 +10,7 @@ struct Args {
     #[arg(short, long)]
     clean: bool,
 }
+
 
 fn main() -> Result<(), u8> {
     let args = Args::parse();
@@ -45,7 +47,7 @@ fn main() -> Result<(), u8> {
                     ).as_str(),
                     format!(
                         "--transform=s#^#{}/#",
-                        CARGO_NAME
+                        NAME_VERSION.as_str()
                     ).as_str(),
                     "neovim",
                     "tmux"
@@ -71,20 +73,68 @@ fn main() -> Result<(), u8> {
             }
 
             // rpm
-            //    mkdir -p \
-            //        ${RPMBUILD_BUILD_DIR}       \
-            //        ${RPMBUILD_BUILDROOT_DIR}   \
-            //        ${RPMBUILD_RPMS_DIR}        \
-            //        ${RPMBUILD_SOURCES_DIR}     \
-            //        ${RPMBUILD_SPECS_DIR}       \
-            //        ${RPMBUILD_SRPMS_DIR}
-            //    cp ${src_file_path} ${rpmbuild_src_file_path}
-            //    sed \
-            //        -e "s#^Name:\$#Name: ${PROJECT_NAME}#" \
-            //        -e "s#^Version:\$#Version: ${arg_version}#" \
-            //        -e "s#^Source0:\$#Source0: ${rpmbuild_src_file_path}#" \
-            //        ${RPM_SPEC_FILE_PATH} > ${RPMBUILD_SPEC_FILE_PATH}
-            //    rpmbuild --define "_topdir ${RPMBUILD_DIR}" -ba "${RPMBUILD_SPEC_FILE_PATH}"
+            for dir in [
+                PACKAGES_RPMBUILD_BUILD_DIR.as_path(),
+                PACKAGES_RPMBUILD_BUILDROOT_DIR.as_path(),
+                PACKAGES_RPMBUILD_RPMS_DIR.as_path(),
+                PACKAGES_RPMBUILD_SOURCES_DIR.as_path(),
+                PACKAGES_RPMBUILD_SPECS_DIR.as_path(),
+                PACKAGES_RPMBUILD_SRPMS_DIR.as_path()
+            ] {
+                if create_dir_all(dir).is_err() {
+                    return Err(6);
+                }
+            }
+            if copy(
+                PACKAGES_SRC_FILE.as_path(),
+                PACKAGES_RPMBUILD_SRC_FILE.as_path()
+            ).is_err() {
+                return Err(7);
+            }
+
+            let mut file = File::create(
+                PACKAGES_RPMBUILD_SPEC_FILE.as_path()
+            ).unwrap();
+            let output = Command::new("sed")
+                .args([
+                    "-e", format!(
+                        "s#^Name:$#Name: {}#",
+                        CARGO_NAME
+                    ).as_str(),
+                    "-e", format!(
+                        "s#^Version:$#Version: {}#",
+                        CARGO_VERSION
+                    ).as_str(),
+                    "-e", format!(
+                        "s#^Source0:$#Source0: {}#",
+                        PACKAGES_RPMBUILD_SRC_FILE.to_string_lossy()
+                    ).as_str(),
+                    &ASSETS_RPM_SPEC_FILE.to_string_lossy(),
+                    //">", &PACKAGES_RPMBUILD_SPEC_FILE.to_string_lossy()
+                ])
+                .stdout(Stdio::from(file.try_clone().unwrap()))
+                .output()
+                .unwrap();
+            file.write_all(&output.stdout).unwrap();
+
+            let stuff = Command::new("rpmbuild")
+                .args([
+                    format!(
+                        "--define=_topdir {}",
+                        PACKAGES_RPMBUILD_DIR.to_string_lossy()
+                    ),
+                    "-ba".to_string(),
+                    PACKAGES_RPMBUILD_SPEC_FILE.to_string_lossy().to_string()
+                ])
+                .output()
+                .unwrap();
+                //.get_args()
+                //.for_each(|arg| println!("{}", arg.to_string_lossy()));
+            println!("{}", std::str::from_utf8(&stuff.stdout).unwrap());
+            println!();
+            println!("========");
+            println!();
+            println!("{}", std::str::from_utf8(&stuff.stderr).unwrap());
 
             Ok(())
         },
