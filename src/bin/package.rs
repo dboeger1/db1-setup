@@ -144,7 +144,10 @@ fn build_src() -> Result<(), PackageError> {
         .to_os_string();
     tar_command
         .get_args()
-        .for_each(|arg| tar_string.push(arg));
+        .for_each(|arg| tar_string.push(format!(
+            " {}",
+            arg.to_string_lossy(),
+        )));
 
     let tar_output = tar_command
         .output()
@@ -283,6 +286,23 @@ fn build_rpm() -> Result<(), PackageError> {
             source: Some(error),
         })?;
 
+    let mut files = String::new();
+    INSTALL_FILES
+        .iter()
+        .map(|(_, destination)| destination
+            .to_string()
+            .replacen(
+                INSTALL_ROOT_DIR
+                    .to_string_lossy()
+                    .as_ref(),
+                "%{app_destination_dir}",
+                1,
+            )
+        )
+        .for_each(|destination| files.push_str(&format!(
+            "\\\n{}",
+            destination,
+        )));
     let mut sed_command = Command::new("sed");
     sed_command
         .args([
@@ -298,6 +318,10 @@ fn build_rpm() -> Result<(), PackageError> {
                 "--expression=s#^Source0:$#Source0: {}#",
                 PACKAGES_RPMBUILD_SRC_FILE.to_string_lossy(),
             ),
+            format!(
+                "--expression=\\#^%files$#a{}",
+                files,
+            ),
             ASSETS_RPM_SPEC_FILE.to_string_lossy().to_string(),
         ])
         .stdout(Stdio::from(destination));
@@ -306,7 +330,10 @@ fn build_rpm() -> Result<(), PackageError> {
         .to_os_string();
     sed_command
         .get_args()
-        .for_each(|arg| sed_string.push(arg));
+        .for_each(|arg| sed_string.push(format!(
+            " {}",
+            arg.to_string_lossy(),
+        )));
 
     let sed_output = sed_command
         .output()
@@ -371,7 +398,10 @@ fn build_rpm() -> Result<(), PackageError> {
         .to_os_string();
     rpmbuild_command
         .get_args()
-        .for_each(|arg| rpmbuild_string.push(arg));
+        .for_each(|arg| rpmbuild_string.push(format!(
+            " {}",
+            arg.to_string_lossy(),
+        )));
 
     let rpmbuild_output = rpmbuild_command
         .output()

@@ -12,8 +12,8 @@ Source0:
 
 BuildArch: noarch
 
-%{!?prefix_app: %global prefix_app /opt}
-%global app_dir %{prefix_app}/%{name}
+%global app_destination_dir /opt/%{name}
+%global app_source_dir %{buildroot}/%{app_destination_dir}
 
 %description
 
@@ -28,32 +28,32 @@ BuildArch: noarch
 %install
 (
     cd tmux &&
-    exec install -D -t %{buildroot}/%{app_dir}/tmux \
+    exec install -D -t %{app_source_dir}/tmux \
         .tmux.conf
 )
 
 (
     cd neovim &&
-    exec install -D -t %{buildroot}/%{app_dir}/neovim \
+    exec install -D -t %{app_source_dir}/neovim \
         init.lua \
         lazy-lock.json
 )
 
 (
     cd neovim/lua &&
-    exec install -D -t %{buildroot}/%{app_dir}/neovim/lua \
+    exec install -D -t %{app_source_dir}/neovim/lua \
         .luarc.json
 )
 
 (
     cd neovim/lua/plugins &&
-    exec install -D -t %{buildroot}/%{app_dir}/neovim/lua/plugins \
+    exec install -D -t %{app_source_dir}/neovim/lua/plugins \
         plugin_netrw.lua
 )
 
 (
     cd neovim/lua/plugins/lazy &&
-    exec install -D -t %{buildroot}/%{app_dir}/neovim/lua/plugins/lazy \
+    exec install -D -t %{app_source_dir}/neovim/lua/plugins/lazy \
         plugin_cmp.lua \
         plugin_kanagawa.lua \
         plugin_lualine.lua \
@@ -67,7 +67,7 @@ BuildArch: noarch
 
 (
     cd neovim/lua/settings &&
-    exec install -D -t %{buildroot}/%{app_dir}/neovim/lua/settings \
+    exec install -D -t %{app_source_dir}/neovim/lua/settings \
         indentation.lua \
         information.lua \
         key_maps.lua \
@@ -81,26 +81,6 @@ BuildArch: noarch
 
 
 %files
-/%{app_dir}/tmux/.tmux.conf
-/%{app_dir}/neovim/init.lua
-/%{app_dir}/neovim/lazy-lock.json
-/%{app_dir}/neovim/lua/.luarc.json
-/%{app_dir}/neovim/lua/plugins/plugin_netrw.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_cmp.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_kanagawa.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_lualine.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_mason.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_nightfox.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_snippy.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_telescope.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_telescope_fzf_native.lua
-/%{app_dir}/neovim/lua/plugins/lazy/plugin_treesitter.lua
-/%{app_dir}/neovim/lua/settings/indentation.lua
-/%{app_dir}/neovim/lua/settings/information.lua
-/%{app_dir}/neovim/lua/settings/key_maps.lua
-/%{app_dir}/neovim/lua/settings/tabs.lua
-/%{app_dir}/neovim/lua/settings/themes.lua
-/%{app_dir}/neovim/lua/settings/windows.lua
 
 
 %changelog
