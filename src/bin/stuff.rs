@@ -1,4 +1,4 @@
-use std::{path::PathBuf, ffi::OsString};
+use std::path::PathBuf;
 
 use dboeger1_dotfiles::*;
 
@@ -6,8 +6,8 @@ fn main() {
     let node1 = FileTreeNode {
         directory: PathBuf::from("/a/b"),
         files: vec![
-            OsString::from("file1.txt"),
-            OsString::from("file2.txt"),
+            PathBuf::from("/a/b/file3.txt"),
+            PathBuf::from("/a/b/file4.txt"),
         ],
         children: vec![],
     };
@@ -15,8 +15,8 @@ fn main() {
     let node2 = FileTreeNode {
         directory: PathBuf::from("/a/c"),
         files: vec![
-            OsString::from("file3.txt"),
-            OsString::from("file4.txt"),
+            PathBuf::from("/a/c/file5.txt"),
+            PathBuf::from("/a/c/file6.txt"),
         ],
         children: vec![],
     };
@@ -24,8 +24,8 @@ fn main() {
     let node3 = FileTreeNode {
         directory: PathBuf::from("/a"),
         files: vec![
-            OsString::from("file5.txt"),
-            OsString::from("file6.txt"),
+            PathBuf::from("/a/file1.txt"),
+            PathBuf::from("/a/file2.txt"),
         ],
         children: vec![
             node1,

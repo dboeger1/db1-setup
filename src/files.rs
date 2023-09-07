@@ -1,6 +1,6 @@
-use std::{
-    ffi::OsString,
-    path::PathBuf,
+use std::path::{
+    Path,
+    PathBuf,
 };
 
 
@@ -12,7 +12,7 @@ pub struct SourceDestination {
 #[derive(Debug)]
 pub struct FileTreeNode {
     pub directory: PathBuf,
-    pub files: Vec<OsString>,
+    pub files: Vec<PathBuf>,
     pub children: Vec<FileTreeNode>,
 }
 
@@ -35,19 +35,17 @@ pub struct FileTreeNodeIterator<'a> {
 }
 
 impl<'a> Iterator for FileTreeNodeIterator<'a> {
-    type Item = &'a OsString;
+    type Item = &'a Path;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // Iterate through files in node first.
         if let Some(file) = self
             .node
             .files
             .get(self.files_index) {
             self.files_index += 1;
-            return Some(file);
+            return Some(file.as_path());
         }
 
-        // Once files are exhausted, 
         while self.children_index < self.node.children.len() {
             if self.child_iterator.is_none() {
                 self.child_iterator = Some(Box::new(self
