@@ -3,7 +3,7 @@ use crate::{
     FILES_CSV_NAME,
     NAME_VERSION,
     PROJECT_ASSETS_PLATFORM_DIR,
-    PROJECT_PACKAGES_DIR,
+    PROJECT_PACKAGES_DIR, SourceDestination,
 };
 use std::path::PathBuf;
 
@@ -74,7 +74,7 @@ lazy_static! {
     // Install paths.
     pub static ref INSTALL_ROOT_DIR: PathBuf =
         PathBuf::from("/opt/dboeger1-dotfiles");
-    pub static ref INSTALL_FILES: Vec<(String, String)> =
+    pub static ref INSTALL_FILES: Vec<SourceDestination> =
         // read CSV file into string
         std::fs::read_to_string(ASSETS_FILES_CSV_FILE.as_path())
         .unwrap()
@@ -82,7 +82,10 @@ lazy_static! {
         // split comma-separated pairs
         .map(|line| {
             let (source, destination) = line.split_once(",").unwrap();
-            (source.to_owned(), destination.to_owned())
+            SourceDestination {
+                source: PathBuf::from(source),
+                destination: PathBuf::from(destination),
+            }
         })
         .collect();
 }

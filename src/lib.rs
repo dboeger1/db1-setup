@@ -1,5 +1,7 @@
+mod files;
 mod platform;
 
+pub use files::*;
 pub use platform::*;
 
 use std::{
