@@ -1,4 +1,4 @@
-use crate::PackageError;
+use crate::package_error::PackageError;
 use dboeger1_dotfiles::*;
 use std::{
     fs::create_dir_all,

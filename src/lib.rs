@@ -1,8 +1,8 @@
-mod files;
 mod platform;
+mod source_destination;
 
-pub use files::*;
 pub use platform::*;
+pub use source_destination::SourceDestination;
 
 use std::{
     env::current_exe,

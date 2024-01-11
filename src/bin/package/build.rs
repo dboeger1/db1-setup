@@ -3,7 +3,7 @@ mod rpm;
 mod src;
 
 
-use crate::PackageError;
+use crate::package_error::PackageError;
 use dboeger1_dotfiles::*;
 use deb::build_deb;
 use rpm::build_rpm;
