@@ -1,13 +1,16 @@
 mod platform;
 mod source_destination;
 
+
 pub use platform::*;
 pub use source_destination::SourceDestination;
+
 
 use std::{
     env::current_exe,
     path::PathBuf,
 };
+
 
 #[macro_use]
 extern crate lazy_static;
@@ -52,17 +55,23 @@ lazy_static! {
     // Asset paths.
     pub static ref PROJECT_ASSETS_DIR: PathBuf =
         PROJECT_ROOT_DIR.join("assets");
-    pub static ref PROJECT_ASSETS_PLATFORM_DIR: PathBuf =
-        PROJECT_ASSETS_DIR.join("platform");
-
     pub static ref PROJECT_ASSETS_NEOVIM_DIR: PathBuf =
         PROJECT_ASSETS_DIR.join("neovim");
-
     pub static ref PROJECT_ASSETS_TMUX_DIR: PathBuf =
         PROJECT_ASSETS_DIR.join("tmux");
 
+    pub static ref PROJECT_ASSETS_PLATFORM_DIR: PathBuf =
+        PROJECT_ASSETS_DIR.join("platform");
+
+    // Source paths.
     pub static ref PROJECT_SRC_DIR: PathBuf =
         PROJECT_ROOT_DIR.join("src");
+    pub static ref PROJECT_GIT_DIR: PathBuf =
+        PROJECT_ROOT_DIR.join(".git");
+
+    // Build paths.
+    pub static ref PROJECT_TARGET_DIR: PathBuf =
+        PROJECT_ROOT_DIR.join("target");
 
     // Package paths.
     pub static ref PROJECT_PACKAGES_DIR: PathBuf =

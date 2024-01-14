@@ -23,18 +23,29 @@ pub(crate) fn build_src() -> Result<(), PackageError> {
         "--gzip".to_string(),
         format!(
             "--directory={}",
-            &PROJECT_ASSETS_DIR.to_string_lossy(),
+            PROJECT_ROOT_DIR.to_string_lossy(),
+        ),
+        format!(
+            "--exclude={}",
+            PROJECT_GIT_DIR.file_name().unwrap().to_string_lossy(),
+        ),
+        format!(
+            "--exclude={}",
+            PROJECT_TARGET_DIR.file_name().unwrap().to_string_lossy(),
+        ),
+        format!(
+            "--exclude={}",
+            PROJECT_PACKAGES_DIR.file_name().unwrap().to_string_lossy(),
         ),
         format!(
             "--file={}",
-            &PACKAGES_SRC_FILE.to_string_lossy(),
+            PACKAGES_SRC_FILE.to_string_lossy(),
         ),
         format!(
-            "--transform=s#^#{}/#",
+            "--transform=s#^.#{}#",
             NAME_VERSION.as_str(),
         ),
-        "neovim".to_string(),
-        "tmux".to_string(),
+        ".".to_string(),
     ]);
     let mut tar_string = tar_command
         .get_program()

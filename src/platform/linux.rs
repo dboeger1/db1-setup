@@ -3,7 +3,8 @@ use crate::{
     FILES_CSV_NAME,
     NAME_VERSION,
     PROJECT_ASSETS_PLATFORM_DIR,
-    PROJECT_PACKAGES_DIR, SourceDestination,
+    PROJECT_PACKAGES_DIR,
+    SourceDestination,
 };
 use std::path::PathBuf;
 

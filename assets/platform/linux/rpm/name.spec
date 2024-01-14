@@ -27,32 +27,32 @@ BuildArch: noarch
 
 %install
 (
-    cd tmux &&
+    cd assets/tmux &&
     exec install -D -t %{app_source_dir}/tmux \
         .tmux.conf
 )
 
 (
-    cd neovim &&
+    cd assets/neovim &&
     exec install -D -t %{app_source_dir}/neovim \
         init.lua \
         lazy-lock.json
 )
 
 (
-    cd neovim/lua &&
+    cd assets/neovim/lua &&
     exec install -D -t %{app_source_dir}/neovim/lua \
         .luarc.json
 )
 
 (
-    cd neovim/lua/plugins &&
+    cd assets/neovim/lua/plugins &&
     exec install -D -t %{app_source_dir}/neovim/lua/plugins \
         plugin_netrw.lua
 )
 
 (
-    cd neovim/lua/plugins/lazy &&
+    cd assets/neovim/lua/plugins/lazy &&
     exec install -D -t %{app_source_dir}/neovim/lua/plugins/lazy \
         plugin_cmp.lua \
         plugin_kanagawa.lua \
@@ -66,7 +66,7 @@ BuildArch: noarch
 )
 
 (
-    cd neovim/lua/settings &&
+    cd assets/neovim/lua/settings &&
     exec install -D -t %{app_source_dir}/neovim/lua/settings \
         indentation.lua \
         information.lua \
