@@ -27,15 +27,24 @@ pub(crate) fn build_src() -> Result<(), PackageError> {
         ),
         format!(
             "--exclude={}",
-            PROJECT_GIT_DIR.file_name().unwrap().to_string_lossy(),
+            PROJECT_GIT_DIR
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--exclude={}",
-            PROJECT_TARGET_DIR.file_name().unwrap().to_string_lossy(),
+            PROJECT_TARGET_DIR
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--exclude={}",
-            PROJECT_PACKAGES_DIR.file_name().unwrap().to_string_lossy(),
+            PROJECT_PACKAGES_DIR
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--file={}",

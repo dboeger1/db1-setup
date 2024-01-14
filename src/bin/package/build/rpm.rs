@@ -1,6 +1,7 @@
 use crate::package_error::PackageError;
 use dboeger1_dotfiles::*;
 use std::{
+    env::consts::ARCH,
     fs::{
         File,
         copy,
@@ -91,6 +92,10 @@ pub(crate) fn build_rpm() -> Result<(), PackageError> {
             format!(
                 "--expression=s#^Source0:$#Source0: {}#",
                 PACKAGES_RPMBUILD_SRC_FILE.to_string_lossy(),
+            ),
+            format!(
+                "--expression=s#^BuildArch:$#BuildArch: {}#",
+                ARCH,
             ),
             format!(
                 "--expression=\\#^%files$#a{}",

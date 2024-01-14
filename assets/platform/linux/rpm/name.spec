@@ -10,7 +10,7 @@ Source0:
 #BuildRequires:
 #Requires:
 
-BuildArch: noarch
+BuildArch:
 
 %global app_destination_dir /opt/%{name}
 %global app_source_dir %{buildroot}/%{app_destination_dir}
@@ -23,9 +23,16 @@ BuildArch: noarch
 
 
 %build
+cargo build
 
 
 %install
+(
+    cd target/debug &&
+    exec install -D -t %{app_source_dir} \
+        configure
+)
+
 (
     cd assets/tmux &&
     exec install -D -t %{app_source_dir}/tmux \

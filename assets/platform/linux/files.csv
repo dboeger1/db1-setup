@@ -1,3 +1,4 @@
+target/debug/configure,/opt/dboeger1-dotfiles/configure
 tmux/.tmux.conf,/opt/dboeger1-dotfiles/tmux/.tmux.conf
 neovim/init.lua,/opt/dboeger1-dotfiles/neovim/init.lua
 neovim/lazy-lock.json,/opt/dboeger1-dotfiles/neovim/lazy-lock.json
