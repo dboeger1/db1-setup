@@ -6,7 +6,10 @@ use crate::{
     PROJECT_PACKAGES_DIR,
     SourceDestination,
 };
-use std::path::PathBuf;
+use std::{
+    env::var,
+    path::PathBuf,
+};
 
 
 pub const PLATFORM_NAME: &str = "linux";
@@ -94,4 +97,8 @@ lazy_static! {
             }
         })
         .collect();
+
+    // User paths.
+    pub static ref HOME_DIR: PathBuf =
+        PathBuf::from(var("HOME").unwrap());
 }
