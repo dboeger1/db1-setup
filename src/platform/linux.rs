@@ -75,6 +75,11 @@ lazy_static! {
     // Install paths.
     pub static ref INSTALL_ROOT_DIR: PathBuf =
         PathBuf::from("/opt/dboeger1-dotfiles");
+    pub static ref INSTALL_NEOVIM_DIR: PathBuf =
+        INSTALL_ROOT_DIR.join("neovim");
+    pub static ref INSTALL_TMUX_DIR: PathBuf =
+        INSTALL_ROOT_DIR.join("tmux");
+
     pub static ref INSTALL_FILES: Vec<SourceDestination> =
         // read CSV file into string
         std::fs::read_to_string(ASSETS_FILES_CSV_FILE.as_path())

@@ -6,6 +6,8 @@ use std::{
 
 
 pub(crate) fn install_dependencies() -> Result<(), ConfigureError> {
+    println!("Installing dependencies...");
+
     let mut dnf_command = Command::new("dnf");
     dnf_command.args([
           "install",
@@ -108,5 +110,6 @@ pub(crate) fn install_dependencies() -> Result<(), ConfigureError> {
         });
     }
 
+    println!("Done.");
     Ok(())
 }
