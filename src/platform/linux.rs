@@ -109,13 +109,9 @@ lazy_static! {
                 .destination
                 .parent()
                 .unwrap()
-                .strip_prefix(INSTALL_ROOT_DIR.as_path())
-                .unwrap()
                 .ancestors()
                 .for_each(|directory| {
-                    let _ = trie.insert(
-                        &INSTALL_ROOT_DIR.join(directory)
-                    );
+                    let _ = trie.insert(directory);
                 })
             );
         trie

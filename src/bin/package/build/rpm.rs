@@ -69,43 +69,31 @@ pub(crate) fn build_rpm() -> Result<(), PackageError> {
                 .destination
                 .parent()
                 .unwrap()
-                .strip_prefix(INSTALL_ROOT_DIR.as_path())
-                .unwrap()
                 .to_string_lossy(),
             source_destination
                 .source
                 .to_string_lossy(),
         )));
 
-    let mut files = String::new();
+    let mut files = format!(
+        "\\\n%dir {}",
+        INSTALL_ROOT_DIR.to_string_lossy(),
+    );
     INSTALL_DIRECTORIES
         .iter()
         .for_each(|directory| files.push_str(&format!(
             "\\\n%dir {}",
-            directory
-                .to_string_lossy()
-                .replacen(
-                    INSTALL_ROOT_DIR
-                        .to_string_lossy()
-                        .as_ref(),
-                    "%{app_destination_dir}",
-                    1,
-                ),
+            INSTALL_ROOT_DIR
+                .join(directory)
+                .to_string_lossy(),
         )));
     INSTALL_FILES
         .iter()
         .for_each(|source_destination| files.push_str(&format!(
             "\\\n{}",
-            &source_destination
-                .destination
-                .to_string_lossy()
-                .replacen(
-                    INSTALL_ROOT_DIR
-                        .to_string_lossy()
-                        .as_ref(),
-                    "%{app_destination_dir}",
-                    1,
-                ),
+            INSTALL_ROOT_DIR
+                .join(&source_destination.destination)
+                .to_string_lossy(),
         )));
 
     let mut sed_command = Command::new("sed");
