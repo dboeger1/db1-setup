@@ -79,7 +79,8 @@ lazy_static! {
 
     // Install paths.
     pub static ref INSTALL_ROOT_DIR: PathBuf =
-        PathBuf::from("/opt/dboeger1-dotfiles");
+        PathBuf::from("/opt")
+        .join(CARGO_NAME);
     pub static ref INSTALL_NEOVIM_DIR: PathBuf =
         INSTALL_ROOT_DIR.join("neovim");
     pub static ref INSTALL_TMUX_DIR: PathBuf =
