@@ -3,8 +3,8 @@ Version:
 Release: 1%{?dist}
 Summary: Collection of GitHub user dboeger1's personal configuration files.
 
-License: None
-#URL:
+License: MIT
+URL: https://github.com/dboeger1/%{name}
 Source0:
 #
 #BuildRequires:
