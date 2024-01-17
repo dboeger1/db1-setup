@@ -6,8 +6,10 @@ use crate::{
     PROJECT_PACKAGES_DIR,
     SourceDestination,
 };
+use path_trie::PathTrie;
 use std::{
     env::var,
+    fs::read_to_string,
     path::PathBuf,
 };
 
@@ -85,7 +87,7 @@ lazy_static! {
 
     pub static ref INSTALL_FILES: Vec<SourceDestination> =
         // read CSV file into string
-        std::fs::read_to_string(ASSETS_FILES_CSV_FILE.as_path())
+        read_to_string(ASSETS_FILES_CSV_FILE.as_path())
         .unwrap()
         .lines()
         // split comma-separated pairs
@@ -97,6 +99,26 @@ lazy_static! {
             }
         })
         .collect();
+
+    pub static ref INSTALL_DIRECTORIES: PathTrie = {
+        let mut trie = PathTrie::new();
+        INSTALL_FILES
+            .iter()
+            .for_each(|source_destination| source_destination
+                .destination
+                .parent()
+                .unwrap()
+                .strip_prefix(INSTALL_ROOT_DIR.as_path())
+                .unwrap()
+                .ancestors()
+                .for_each(|directory| {
+                    let _ = trie.insert(
+                        &INSTALL_ROOT_DIR.join(directory)
+                    );
+                })
+            );
+        trie
+    };
 
     // User paths.
     pub static ref HOME_DIR: PathBuf =
