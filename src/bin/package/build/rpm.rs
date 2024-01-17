@@ -60,6 +60,23 @@ pub(crate) fn build_rpm() -> Result<(), PackageError> {
             source: Some(error),
         })?;
 
+    let mut install = String::new();
+    INSTALL_FILES
+        .iter()
+        .for_each(|source_destination| install.push_str(&format!(
+            "\\\ninstall -D -t %{{app_source_dir}}/{} {}",
+            source_destination
+                .destination
+                .parent()
+                .unwrap()
+                .strip_prefix(INSTALL_ROOT_DIR.as_path())
+                .unwrap()
+                .to_string_lossy(),
+            source_destination
+                .source
+                .to_string_lossy(),
+        )));
+
     let mut files = String::new();
     INSTALL_DIRECTORIES
         .iter()
@@ -109,6 +126,10 @@ pub(crate) fn build_rpm() -> Result<(), PackageError> {
             format!(
                 "--expression=s#^BuildArch:$#BuildArch: {}#",
                 ARCH,
+            ),
+            format!(
+                "--expression=\\#^%install$#a{}",
+                install,
             ),
             format!(
                 "--expression=\\#^%files$#a{}",
