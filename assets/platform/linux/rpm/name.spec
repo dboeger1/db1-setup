@@ -1,7 +1,7 @@
 Name:
 Version:
 Release: 1%{?dist}
-Summary: Collection of GitHub user dboeger1's personal configuration files.
+Summary: Collection of GitHub user dboeger1's personal configuration files
 
 License: MIT
 URL: https://github.com/dboeger1/%{name}
