@@ -1,5 +1,7 @@
-use crate::configure_error::ConfigureError;
-use dboeger1_dotfiles::INSTALL_NEOVIM_DIR;
+use crate::{
+    error::ConfigureError,
+    INSTALL_NEOVIM_DIR,
+};
 use std::{
     fs::copy,
     path::PathBuf,

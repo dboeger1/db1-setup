@@ -1,0 +1,37 @@
+// Utilities
+bash
+coreutils
+diffutils
+fd-find
+git
+patch
+ripgrep
+tree
+unzip
+wget
+
+// Applications
+neovim
+
+// C
+cmake
+gcc
+make
+
+// C++
+gcc-c++
+
+// Rust
+rustup
+
+// Python
+python
+
+// Javascript
+npm
+
+// RPM
+rpm-build
+rpm-devel
+rpmdevtools
+rpmlint
