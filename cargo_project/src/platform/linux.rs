@@ -1,27 +1,27 @@
 mod fedora;
-mod ubuntu;
 
 
 use crate::platform::{
     OS_INFO,
     Platform,
 };
+use os_info::Type;
 use std::{
     env::var,
-    path::PathBuf,
+    path::PathBuf, 
+    sync::Arc,
 };
 
 
 
 lazy_static! {
-    pub static ref PLATFORM: Option<dyn Platform> = {
+    pub(crate) static ref PLATFORM: Option<Arc<&'static dyn Platform>> =
         match OS_INFO.os_type() {
-            os_info::Type::Fedora => fedora::get_platform(),
-            os_info::Type::Debian => ubuntu::get_platform(),
+            Type::Fedora => fedora::PLATFORM.clone(),
             _ => None,
-        }
-    };
+        };
+
     // User paths.
-    pub static ref HOME_DIR: PathBuf =
+    pub(crate) static ref HOME_DIR: PathBuf =
         PathBuf::from(var("HOME").unwrap());
 }

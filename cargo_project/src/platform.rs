@@ -1,20 +1,20 @@
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
-pub use linux::*;
+pub(crate) use linux::*;
 
 
 use crate::{
     error::ConfigureError,
     source_destination::SourceDestination,
 };
+use std::fmt::Debug;
 
 
-pub(crate) trait Platform {
-    fn get_neovim_paths() -> SourceDestination;
-    fn get_tmux_paths() -> SourceDestination;
-
-    fn install_packages() -> Result<(), ConfigureError>;
+pub(crate) trait Platform: Debug + Sync {
+    fn get_neovim_paths(&self) -> SourceDestination;
+    fn get_tmux_paths(&self) -> SourceDestination;
+    fn install_packages(&self) -> Result<(), ConfigureError>;
 }
 
 lazy_static! {

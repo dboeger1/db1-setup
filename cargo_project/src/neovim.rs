@@ -1,7 +1,4 @@
-use crate::{
-    error::ConfigureError,
-    INSTALL_NEOVIM_DIR,
-};
+use crate::error::ConfigureError;
 use std::{
     fs::copy,
     path::PathBuf,

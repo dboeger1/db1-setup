@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 
-pub struct SourceDestination {
-    pub source: PathBuf,
-    pub destination: PathBuf,
+pub(crate) struct SourceDestination {
+    pub(crate) source: PathBuf,
+    pub(crate) destination: PathBuf,
 }
