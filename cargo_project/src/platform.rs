@@ -11,9 +11,19 @@ use crate::{
 
 
 pub(crate) trait Platform: Sync {
-    fn get_neovim_paths(&self) -> Option<SourceDestination>;
-    fn get_tmux_paths(&self) -> Option<SourceDestination>;
-    fn install_packages(&self) -> Result<(), ConfigureError>;
+    fn get_neovim_paths(&self) -> Option<SourceDestination> {
+        None
+    }
+
+    fn get_tmux_paths(&self) -> Option<SourceDestination> {
+        None
+    }
+
+    fn get_install_packages(&self) -> Option<
+            fn() -> Result<(), ConfigureError>
+        > {
+        None
+    }
 }
 
 lazy_static! {

@@ -1,5 +1,4 @@
 use crate::{
-    error::ConfigureError,
     platform::{
         Platform,
         INSTALL_DIR,
@@ -27,27 +26,6 @@ impl Platform for PlatformFedora38 {
             destination: HOME_DIR.join(".tmux.conf"),
         })
     }
-
-    fn install_packages(&self) -> Result<(), ConfigureError> {
-        Ok(())
-    }
-    //fn get_neovim_paths() -> SourceDestination {
-    //    SourceDestination {
-    //        source: INSTALL_ROOT_DIR
-    //            .join("neovim"),
-    //        destination: HOME_DIR
-    //            .join("neovim"),
-    //    }
-    //}
-
-    //fn get_tmux_paths() -> SourceDestination {
-    //    SourceDestination {
-    //        source: INSTALL_ROOT_DIR
-    //            .join("tmux/.tmux.conf"),
-    //        destination: PathBuf::from(var("HOME").unwrap())
-    //            .join(".tmux.conf"),
-    //    }
-    //}
 
     //fn install_packages() -> Result<(), crate::error::ConfigureError> {
     //    println!("Installing useful packages...");

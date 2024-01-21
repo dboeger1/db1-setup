@@ -17,12 +17,15 @@ pub(crate) const CARGO_NAME: &str = env!("CARGO_PKG_NAME");
 fn main() -> ExitCode {
     match PLATFORM.as_ref() {
         Some(platform_data) => {
-            if let Err(error) = platform_data.install_packages() {
-                eprintln!("{}", error);
-                if let Some(source) = error.source {
-                    eprintln!("{}", source);
+            if let Some(install_packages) =
+                platform_data.get_install_packages() {
+                if let Err(error) = install_packages() {
+                    eprintln!("{}", error);
+                    if let Some(source) = error.source {
+                        eprintln!("{}", source);
+                    }
+                    return ExitCode::FAILURE;
                 }
-                return ExitCode::FAILURE;
             }
 
             println!("tmux paths:");

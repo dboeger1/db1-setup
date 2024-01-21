@@ -1,17 +1,21 @@
 use crate::{
-    error::ConfigureError,
     platform::{
         Platform,
         INSTALL_DIR,
         HOME_DIR,
     },
-    source_destination::SourceDestination,
+    source_destination::SourceDestination, error::ConfigureError,
 };
 
 
 pub(crate) const PLATFORM: PlatformFedora39 = PlatformFedora39 {};
 
 pub(crate) struct PlatformFedora39 {}
+
+fn install_packages() -> Result<(), ConfigureError> {
+    println!("f39 install_packages() inner function");
+    Ok(())
+}
 
 impl Platform for PlatformFedora39 {
     fn get_neovim_paths(&self) -> Option<SourceDestination> {
@@ -28,26 +32,11 @@ impl Platform for PlatformFedora39 {
         })
     }
 
-    fn install_packages(&self) -> Result<(), ConfigureError> {
-        Ok(())
+    fn get_install_packages(&self) -> Option<
+            fn() -> Result<(), crate::error::ConfigureError>
+        > {
+       Some(install_packages)
     }
-    //fn get_neovim_paths() -> SourceDestination {
-    //    SourceDestination {
-    //        source: INSTALL_ROOT_DIR
-    //            .join("neovim"),
-    //        destination: HOME_DIR
-    //            .join("neovim"),
-    //    }
-    //}
-
-    //fn get_tmux_paths() -> SourceDestination {
-    //    SourceDestination {
-    //        source: INSTALL_ROOT_DIR
-    //            .join("tmux/.tmux.conf"),
-    //        destination: PathBuf::from(var("HOME").unwrap())
-    //            .join(".tmux.conf"),
-    //    }
-    //}
 
     //fn install_packages() -> Result<(), crate::error::ConfigureError> {
     //    println!("Installing useful packages...");
