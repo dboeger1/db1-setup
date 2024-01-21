@@ -1,12 +1,9 @@
 mod error;
-//mod neovim;
 mod platform;
 mod source_destination;
-//mod tmux;
 
 
-//use neovim::configure_neovim;
-//use tmux::configure_tmux;
+use platform::PLATFORM;
 use std::process::ExitCode;
 
 
@@ -15,30 +12,32 @@ extern crate lazy_static;
 
 
 fn main() -> ExitCode {
-    println!("{:#?}", *platform::PLATFORM);
-    //if let Err(error) = install_packages() {
-    //    eprintln!("{}", error);
-    //    if let Some(source) = error.source {
-    //        eprintln!("{}", source);
-    //    }
-    //    return ExitCode::FAILURE;
-    //}
+    match PLATFORM.as_ref() {
+        Some(platform_data) => {
+            if let Err(error) = platform_data.install_packages() {
+                eprintln!("{}", error);
+                if let Some(source) = error.source {
+                    eprintln!("{}", source);
+                }
+                return ExitCode::FAILURE;
+            }
 
-    //if let Err(error) = configure_tmux() {
-    //    eprintln!("{}", error);
-    //    if let Some(source) = error.source {
-    //        eprintln!("{}", source);
-    //    }
-    //    return ExitCode::FAILURE;
-    //}
+            println!(
+                "tmux paths: {:#?}",
+                platform_data.get_tmux_paths(),
+            );
 
-    //if let Err(error) = configure_neovim() {
-    //    eprintln!("{}", error);
-    //    if let Some(source) = error.source {
-    //        eprintln!("{}", source);
-    //    }
-    //    return ExitCode::FAILURE;
-    //}
+            println!(
+                "nvim paths: {:#?}",
+                platform_data.get_neovim_paths(),
+            );
 
-    ExitCode::SUCCESS
+            ExitCode::SUCCESS
+        },
+        _ => {
+            eprintln!("unrecognized platform");
+
+            ExitCode::FAILURE
+        },
+    }
 }
