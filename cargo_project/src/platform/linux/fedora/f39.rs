@@ -1,35 +1,34 @@
 use crate::{
     error::ConfigureError,
-    platform::Platform,
+    platform::{
+        Platform,
+        INSTALL_DIR,
+        HOME_DIR,
+    },
     source_destination::SourceDestination,
 };
-use std::path::PathBuf;
 
 
 pub(crate) const PLATFORM: PlatformFedora39 = PlatformFedora39 {};
 
-#[derive(Debug)]
 pub(crate) struct PlatformFedora39 {}
 
 impl Platform for PlatformFedora39 {
-    fn get_neovim_paths(&self) -> SourceDestination {
-        println!("f39::get_neovim_paths()");
-        SourceDestination {
-            source: PathBuf::from("source"),
-            destination: PathBuf::from("destination"),
-        }
+    fn get_neovim_paths(&self) -> Option<SourceDestination> {
+        Some(SourceDestination {
+            source: INSTALL_DIR.join("neovim"),
+            destination: HOME_DIR.join(".config/nvim"),
+        })
     }
 
-    fn get_tmux_paths(&self) -> SourceDestination {
-        println!("f39::get_tmux_paths()");
-        SourceDestination {
-            source: PathBuf::from("source"),
-            destination: PathBuf::from("destination"),
-        }
+    fn get_tmux_paths(&self) -> Option<SourceDestination> {
+        Some(SourceDestination {
+            source: INSTALL_DIR.join("tmux/.tmux.conf"),
+            destination: HOME_DIR.join(".tmux.conf"),
+        })
     }
 
     fn install_packages(&self) -> Result<(), ConfigureError> {
-        println!("f39::install_packages()");
         Ok(())
     }
     //fn get_neovim_paths() -> SourceDestination {

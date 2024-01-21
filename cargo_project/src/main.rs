@@ -11,6 +11,9 @@ use std::process::ExitCode;
 extern crate lazy_static;
 
 
+pub(crate) const CARGO_NAME: &str = env!("CARGO_PKG_NAME");
+
+
 fn main() -> ExitCode {
     match PLATFORM.as_ref() {
         Some(platform_data) => {
@@ -22,14 +25,40 @@ fn main() -> ExitCode {
                 return ExitCode::FAILURE;
             }
 
+            println!("tmux paths:");
             println!(
-                "tmux paths: {:#?}",
-                platform_data.get_tmux_paths(),
+                "\t{}",
+                platform_data
+                    .get_tmux_paths()
+                    .unwrap()
+                    .source
+                    .to_string_lossy(),
+            );
+            println!(
+                "\t{}",
+                platform_data
+                    .get_tmux_paths()
+                    .unwrap()
+                    .destination
+                    .to_string_lossy(),
             );
 
+            println!("neovim paths:");
             println!(
-                "nvim paths: {:#?}",
-                platform_data.get_neovim_paths(),
+                "\t{}",
+                platform_data
+                    .get_neovim_paths()
+                    .unwrap()
+                    .source
+                    .to_string_lossy(),
+            );
+            println!(
+                "\t{}",
+                platform_data
+                    .get_neovim_paths()
+                    .unwrap()
+                    .destination
+                    .to_string_lossy(),
             );
 
             ExitCode::SUCCESS
