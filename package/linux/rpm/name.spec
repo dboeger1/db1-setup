@@ -1,11 +1,11 @@
-Name:
-Version:
+Name: dboeger1-dotfiles
+Version: 0.1.0
 Release: 1%{?dist}
 Summary: Collection of GitHub user dboeger1's personal configuration files
 
 License: MIT
 URL: https://github.com/dboeger1/%{name}
-Source0:
+Source0: 
 #
 #BuildRequires:
 #Requires:

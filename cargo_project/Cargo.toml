@@ -9,7 +9,6 @@ edition = "2021"
 clap = { version = "4.4.0", features = ["derive", "cargo"] }
 lazy_static = "1.4.0"
 os_info = "3.7.0"
-path-trie-rs = { git = "ssh://git@github.com/dboeger1/path-trie.git" }
 
 [[bin]]
 name = "dbd_configure"
