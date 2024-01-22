@@ -27,9 +27,19 @@ lazy_static! {
 }
 
 
-pub(crate) fn dnf_install() -> Result<(), ConfigureError> {
+pub(crate) fn dnf_install<I>(packages: I) -> Result<(), ConfigureError>
+where
+    I: IntoIterator,
+    I::Item: AsRef<str>,
+{
     let mut dnf_command = Command::new("dnf");
-    dnf_command.args(["install"]);
+    dnf_command.arg("install");
+    packages
+        .into_iter()
+        .for_each(|package| {
+            dnf_command.arg(package.as_ref());
+        });
+
     let mut dnf_string = dnf_command
         .get_program()
         .to_os_string();
