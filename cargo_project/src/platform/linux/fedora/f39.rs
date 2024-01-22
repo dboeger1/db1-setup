@@ -1,21 +1,19 @@
 use crate::{
+    error::ConfigureError,
     platform::{
-        Platform,
-        INSTALL_DIR,
         HOME_DIR,
+        INSTALL_DIR,
+        linux::fedora::dnf_install,
+        Platform,
     },
-    source_destination::SourceDestination, error::ConfigureError,
+    source_destination::SourceDestination,
 };
 
 
+// Platform data.
 pub(crate) const PLATFORM: PlatformFedora39 = PlatformFedora39 {};
 
 pub(crate) struct PlatformFedora39 {}
-
-fn install_packages() -> Result<(), ConfigureError> {
-    println!("f39 install_packages() inner function");
-    Ok(())
-}
 
 impl Platform for PlatformFedora39 {
     fn get_neovim_paths(&self) -> Option<SourceDestination> {
@@ -33,80 +31,83 @@ impl Platform for PlatformFedora39 {
     }
 
     fn get_install_packages(&self) -> Option<
-            fn() -> Result<(), crate::error::ConfigureError>
+            fn() -> Result<(), ConfigureError>
         > {
-       Some(install_packages)
+       Some(|| {
+            dnf_install()?;
+
+            Ok(())
+       })
     }
-
-    //fn install_packages() -> Result<(), crate::error::ConfigureError> {
-    //    println!("Installing useful packages...");
-
-    //    let mut dnf_command = Command::new("dnf");
-    //    dnf_command.args([
-    //          "install",
-
-    //    ]);
-    //    let mut dnf_string = dnf_command
-    //        .get_program()
-    //        .to_os_string();
-    //    dnf_command
-    //        .get_args()
-    //        .for_each(|arg| dnf_string.push(format!(
-    //            " {}",
-    //            arg.to_string_lossy(),
-    //        )));
-
-    //    let dnf_output = dnf_command
-    //        .output()
-    //        .map_err(|error| ConfigureError {
-    //            message: format!(
-    //                "failed to execute dnf command \"{}\"",
-    //                dnf_string.to_string_lossy(),
-    //            ),
-    //            source: Some(error),
-    //        })?;
-    //    if !dnf_output.status.success() {
-    //        // command
-    //        eprintln!("==== command ====");
-    //        eprintln!("{}", dnf_string.to_string_lossy());
-
-    //        // exit code
-    //        let dnf_exit_code = dnf_output
-    //            .status
-    //            .code();
-    //        eprintln!("==== exit code ====");
-    //        eprintln!(
-    //            "{}",
-    //            dnf_exit_code.map_or_else(
-    //                || "<failed to retrieve>".to_string(),
-    //                |status| status.to_string()
-    //            )
-    //        );
-
-    //        // stdout
-    //        let dnf_stdout = from_utf8(&dnf_output.stdout);
-    //        eprintln!("==== stdout ====");
-    //        if dnf_stdout.is_ok() {
-    //            eprintln!("{}", dnf_stdout.unwrap_or("<failed to retrieve>"));
-    //        }
-
-    //        // stderr
-    //        let dnf_stderr = from_utf8(&dnf_output.stderr);
-    //        eprintln!("==== stderr ====");
-    //        if dnf_stderr.is_ok() {
-    //            eprintln!("{}", dnf_stderr.unwrap_or("<failed to retrieve>"));
-    //        }
-
-    //        return Err(ConfigureError {
-    //            message: format!(
-    //                "dnf command \"{}\" failed",
-    //                dnf_string.to_string_lossy(),
-    //            ),
-    //            source: None,
-    //        });
-    //    }
-
-    //    println!("Done.");
-    //    Ok(())
-    //}
 }
+
+
+// Packages to install.
+lazy_static! {
+        static ref PACKAGES: Vec<&'static str> = PACKAGES_STRING
+            .lines()
+            .filter_map(|line| {
+                let line = line.trim();
+                match line.is_empty() {
+                    true => None,
+                    false => Some(line),
+                }
+            })
+            .collect();
+}
+
+const PACKAGES_STRING: &str = concat!(
+    // Utilities
+    r#"
+    bash
+    coreutils
+    diffutils
+    fd-find
+    git
+    patch
+    ripgrep
+    tree
+    unzip
+    wget
+    "#,
+
+    // Applications
+    r#"
+    neovim
+    "#,
+
+    // C
+    r#"
+    cmake
+    gcc
+    make
+    "#,
+
+    // C++
+    r#"
+    gcc-c++
+    "#,
+
+    // Rust
+    r#"
+    rustup
+    "#,
+
+    // Python
+    r#"
+    python
+    "#,
+
+    // Javascript
+    r#"
+    npm
+    "#,
+
+    // RPM
+    r#"
+    rpm-build
+    rpm-devel
+    rpmdevtools
+    rpmlint
+    "#,
+);
