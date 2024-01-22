@@ -33,11 +33,7 @@ impl Platform for PlatformFedora38 {
     fn get_install_packages(&self) -> Option<
             fn() -> Result<(), ConfigureError>
         > {
-       Some(|| {
-            dnf_install()?;
-
-            Ok(())
-       })
+       Some(|| dnf_install())
     }
 }
 
