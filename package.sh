@@ -50,7 +50,7 @@ if [ ! -d "${ARG_SOURCE_ROOT_DIR}" ]; then
     exit 1
 fi
 
-CARGO_TOML="${ARG_SOURCE_ROOT_DIR}/cargo_project/Cargo.toml"
+CARGO_TOML="${ARG_SOURCE_ROOT_DIR}/cargo/Cargo.toml"
 if [ ! -f "${CARGO_TOML}" ]; then
     echo "Missing Cargo.toml file: \"${CARGO_TOML}\"" >&2
     echo "${USAGE}" >&2
@@ -93,7 +93,7 @@ tar \
     --gzip \
     --directory=${ARG_SOURCE_ROOT_DIR} \
     --exclude=.git \
-    --exclude=cargo_project/target \
+    --exclude=cargo/target \
     --file=${FILE} \
     --transform=s#^.#${NAME_VERSION}# \
     .
