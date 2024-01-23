@@ -75,8 +75,17 @@ NAME_VERSION="${NAME}-${VERSION}"
 
 
 # Create source archive.
-TEMP_DIR="$(mktemp -d)"
-FILE="${TEMP_DIR}/${NAME_VERSION}.tar.gz"
+TEMP_DIR="${TMPDIR:-/tmp}"
+if [ ! -d "${TEMP_DIR}" ]; then
+    echo "Missing temporary directory for builds: \"${TEMP_DIR}\"" >&2
+    echo "${USAGE}" >&2
+    exit 1
+fi
+
+ARCHIVE_DIR="${TEMP_DIR}/${NAME_VERSION}"
+mkdir -p ${ARCHIVE_DIR}
+
+FILE="${ARCHIVE_DIR}/${NAME_VERSION}.tar.gz"
 echo "Creating source archive: \"${FILE}\"..."
 
 tar \
