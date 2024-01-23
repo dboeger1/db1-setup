@@ -1,5 +1,5 @@
 [package]
-name = "dboeger1-dotfiles"
+name = "dbd_configure"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,3 @@ edition = "2021"
 clap = { version = "4.4.0", features = ["derive", "cargo"] }
 lazy_static = "1.4.0"
 os_info = "3.7.0"
-
-[[bin]]
-name = "dbd_configure"
-path = "src/main.rs"
