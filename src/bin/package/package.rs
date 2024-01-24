@@ -1,8 +1,14 @@
-use crate::error::Error;
+use crate::{
+    error::Error,
+    platform::PLATFORM,
+};
 
 
 pub(crate) fn package() -> Result<(), Error> {
-    println!("package()");
+    PLATFORM
+        .as_ref()
+        .unwrap()
+        .stuff();
 
     Ok(())
 }
