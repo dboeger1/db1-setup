@@ -1,16 +1,16 @@
-use crate::configure_error::ConfigureError;
+use crate::configure_error::Error;
 use dboeger1_dotfiles::*;
 use std::fs::copy;
 
 
-pub(crate) fn configure_tmux() -> Result<(), ConfigureError> {
+pub(crate) fn configure_tmux() -> Result<(), Error> {
     println!("Copying tmux configuration...");
 
     let source = INSTALL_TMUX_DIR.join(".tmux.conf");
     let destination = HOME_DIR.join(".tmux.conf");
 
     if destination.exists() {
-        return Err(ConfigureError {
+        return Err(Error {
             message: format!(
                 "destination already exists: \"{}\"",
                 destination.to_string_lossy(),
@@ -20,7 +20,7 @@ pub(crate) fn configure_tmux() -> Result<(), ConfigureError> {
     }
 
     if let Err(error) = copy(source, &destination) {
-        return Err(ConfigureError {
+        return Err(Error {
             message: format!(
                 "failed to copy tmux configuration to destination: \"{}\"",
                 destination.to_string_lossy(),

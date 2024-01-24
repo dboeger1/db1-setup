@@ -1,26 +1,22 @@
-use std::{
-    error::Error,
-    fmt::Display,
-    io,
-};
+use std::fmt::Display;
 
 
 #[derive(Debug)]
-pub(crate) struct ConfigureError {
+pub(crate) struct Error {
     pub(crate) message: String,
-    pub(crate) source: Option<io::Error>,
+    pub(crate) source: Option<std::io::Error>,
 }
 
-impl Display for ConfigureError {
+impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.message)
     }
 }
 
-impl Error for ConfigureError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         self.source
             .as_ref()
-            .map(|error| error as &(dyn Error + 'static))
+            .map(|error| error as &(dyn std::error::Error + 'static))
     }
 }

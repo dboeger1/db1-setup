@@ -5,7 +5,7 @@ pub(crate) use linux::*;
 
 
 use crate::{
-    error::ConfigureError,
+    error::Error,
     source_destination::SourceDestination,
 };
 
@@ -19,9 +19,7 @@ pub(crate) trait Platform: Sync {
         None
     }
 
-    fn get_install_packages(&self) -> Option<
-            fn() -> Result<(), ConfigureError>
-        > {
+    fn get_install_packages(&self) -> Option<fn() -> Result<(), Error>> {
         None
     }
 }

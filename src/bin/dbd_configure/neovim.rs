@@ -1,16 +1,16 @@
-use crate::error::ConfigureError;
+use crate::error::Error;
 use std::{
     fs::copy,
     path::PathBuf,
 };
 
 
-pub(crate) fn configure_neovim() -> Result<(), ConfigureError> {
+pub(crate) fn configure_neovim() -> Result<(), Error> {
     println!("Copying neovim configuration...");
 
     let file = PathBuf::from("~/.config/nvim");
     if file.exists() {
-        return Err(ConfigureError {
+        return Err(Error {
             message: format!(
                 "destination already exists: \"{}\"",
                 file.as_path().to_string_lossy(),
@@ -23,7 +23,7 @@ pub(crate) fn configure_neovim() -> Result<(), ConfigureError> {
         INSTALL_NEOVIM_DIR.as_path(),
         PathBuf::from("~/.config/nvim"),
     ) {
-        return Err(ConfigureError {
+        return Err(Error {
             message: format!(
                 "failed to copy neovim configuration to destination: \"{}\"",
                 "~/.config/nvim",

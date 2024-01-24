@@ -3,7 +3,7 @@ mod f39;
 
 
 use crate::{
-    error::ConfigureError,
+    error::Error,
     platform::Platform,
 };
 use dboeger1_dotfiles::OS_INFO;
@@ -26,7 +26,7 @@ lazy_static! {
 }
 
 
-pub(crate) fn dnf_install<I>(packages: I) -> Result<(), ConfigureError>
+pub(crate) fn dnf_install<I>(packages: I) -> Result<(), Error>
 where
     I: IntoIterator,
     I::Item: AsRef<str>,
@@ -51,7 +51,7 @@ where
 
     let dnf_output = dnf_command
         .output()
-        .map_err(|error| ConfigureError {
+        .map_err(|error| Error {
             message: format!(
                 "failed to execute dnf command \"{}\"",
                 dnf_string.to_string_lossy(),
@@ -90,7 +90,7 @@ where
             eprintln!("{}", dnf_stderr.unwrap_or("<failed to retrieve>"));
         }
 
-        return Err(ConfigureError {
+        return Err(Error {
             message: format!(
                 "dnf command \"{}\" failed",
                 dnf_string.to_string_lossy(),

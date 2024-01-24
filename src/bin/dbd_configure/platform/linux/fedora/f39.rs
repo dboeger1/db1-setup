@@ -1,5 +1,5 @@
 use crate::{
-    error::ConfigureError,
+    error::Error,
     platform::{
         INSTALL_DIR,
         linux::fedora::dnf_install,
@@ -31,9 +31,7 @@ impl Platform for PlatformFedora39 {
         })
     }
 
-    fn get_install_packages(&self) -> Option<
-            fn() -> Result<(), ConfigureError>
-        > {
+    fn get_install_packages(&self) -> Option<fn() -> Result<(), Error>> {
        Some(|| dnf_install(&*PACKAGES))
     }
 }
