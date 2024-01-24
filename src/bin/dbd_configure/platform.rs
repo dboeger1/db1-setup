@@ -8,6 +8,7 @@ use crate::{
     error::ConfigureError,
     source_destination::SourceDestination,
 };
+use lazy_static::lazy_static;
 
 
 pub(crate) trait Platform: Sync {

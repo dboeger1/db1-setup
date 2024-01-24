@@ -7,10 +7,6 @@ use platform::PLATFORM;
 use std::process::ExitCode;
 
 
-#[macro_use]
-extern crate lazy_static;
-
-
 pub(crate) const CARGO_NAME: &str = env!("CARGO_PKG_NAME");
 
 

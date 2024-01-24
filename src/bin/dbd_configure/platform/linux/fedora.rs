@@ -9,6 +9,7 @@ use crate::{
         Platform,
     },
 };
+use lazy_static::lazy_static;
 use os_info::Version;
 use std::{
     process::Command,

@@ -8,6 +8,7 @@ use crate::{
         Platform,
     },
 };
+use lazy_static::lazy_static;
 use os_info::Type;
 use std::{
     env::var,
