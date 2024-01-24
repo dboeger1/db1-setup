@@ -3,15 +3,12 @@ mod fedora;
 
 use crate::{
     CARGO_NAME,
-    platform::{
-        OS_INFO,
-        Platform,
-    },
+    platform::Platform,
 };
+use dboeger1_dotfiles::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Type;
 use std::{
-    env::var,
     path::PathBuf, 
     sync::Arc,
 };
@@ -26,8 +23,6 @@ lazy_static! {
         };
 
     // User paths.
-    pub(crate) static ref HOME_DIR: PathBuf =
-        PathBuf::from(var("HOME").unwrap());
     pub(crate) static ref INSTALL_DIR: PathBuf =
         PathBuf::from(format!("/opt/{}", CARGO_NAME));
 }

@@ -8,7 +8,6 @@ use crate::{
     error::ConfigureError,
     source_destination::SourceDestination,
 };
-use lazy_static::lazy_static;
 
 
 pub(crate) trait Platform: Sync {
@@ -25,8 +24,4 @@ pub(crate) trait Platform: Sync {
         > {
         None
     }
-}
-
-lazy_static! {
-    pub(crate) static ref OS_INFO: os_info::Info = os_info::get();
 }

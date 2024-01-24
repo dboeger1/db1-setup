@@ -4,11 +4,9 @@ mod f39;
 
 use crate::{
     error::ConfigureError,
-    platform::{
-        OS_INFO,
-        Platform,
-    },
+    platform::Platform,
 };
+use dboeger1_dotfiles::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Version;
 use std::{

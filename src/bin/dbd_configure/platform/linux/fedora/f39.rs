@@ -1,13 +1,13 @@
 use crate::{
     error::ConfigureError,
     platform::{
-        HOME_DIR,
         INSTALL_DIR,
         linux::fedora::dnf_install,
         Platform,
     },
     source_destination::SourceDestination,
 };
+use dboeger1_dotfiles::HOME_DIR;
 use lazy_static::lazy_static;
 
 
