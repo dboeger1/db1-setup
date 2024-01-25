@@ -5,17 +5,14 @@ use crate::{
     error::Error,
     platform::Platform,
     values::{
-        DIR_PROJECT_GIT,
-        DIR_PROJECT_PACKAGES,
-        DIR_PROJECT_ROOT,
-        DIR_PROJECT_TARGET,
-        FILE_TAR,
+        DIR_PROJECT_GIT, DIR_PROJECT_PACKAGES, DIR_PROJECT_ROOT, DIR_PROJECT_TARGET, FILE_TAR, NAME_VERSION
     },
 };
 use dboeger1_dotfiles::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Type;
 use std::{
+    fs::create_dir_all,
     process::Command,
     str::from_utf8,
 };
@@ -31,6 +28,15 @@ lazy_static! {
 
 
 pub(crate) fn tar_sources() -> Result<(), Error> {
+    create_dir_all(DIR_PROJECT_PACKAGES.as_path())
+        .map_err(|error| Error {
+            message: format!(
+                "failed to create directory: \"{}\"",
+                DIR_PROJECT_PACKAGES.to_string_lossy(),
+            ),
+            source: Some(error),
+        })?;
+
     let mut tar_command = Command::new("tar");
     tar_command.args([
         "--create".to_string(),
@@ -41,15 +47,28 @@ pub(crate) fn tar_sources() -> Result<(), Error> {
         ),
         format!(
             "--exclude={}",
-            DIR_PROJECT_GIT.to_string_lossy(),
+            DIR_PROJECT_GIT
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--exclude={}",
-            DIR_PROJECT_TARGET.to_string_lossy(),
+            DIR_PROJECT_TARGET
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--exclude={}",
-            DIR_PROJECT_PACKAGES.to_string_lossy(),
+            DIR_PROJECT_PACKAGES
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
+        ),
+        format!(
+            "--transform=s#^.#{}#",
+            NAME_VERSION,
         ),
         format!(
             "--file={}",
