@@ -44,8 +44,11 @@ lazy_static! {
     pub(crate) static ref DIR_PROJECT_PACKAGES: PathBuf =
         DIR_PROJECT_ROOT.join("packages");
 
+    pub(crate) static ref DIR_PACKAGES_SRC: PathBuf =
+        DIR_PROJECT_PACKAGES.join("src");
+
     pub(crate) static ref FILE_TAR: PathBuf =
-        DIR_PROJECT_PACKAGES.join(format!(
+        DIR_PACKAGES_SRC.join(format!(
             "{}.tar.gz",
             NAME_VERSION,
         ));

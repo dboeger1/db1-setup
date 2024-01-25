@@ -5,7 +5,13 @@ use crate::{
     error::Error,
     platform::Platform,
     values::{
-        DIR_PROJECT_GIT, DIR_PROJECT_PACKAGES, DIR_PROJECT_ROOT, DIR_PROJECT_TARGET, FILE_TAR, NAME_VERSION
+        DIR_PACKAGES_SRC,
+        DIR_PROJECT_GIT,
+        DIR_PROJECT_PACKAGES,
+        DIR_PROJECT_ROOT,
+        DIR_PROJECT_TARGET,
+        FILE_TAR,
+        NAME_VERSION,
     },
 };
 use dboeger1_dotfiles::OS_INFO;
@@ -28,11 +34,11 @@ lazy_static! {
 
 
 pub(crate) fn tar_sources() -> Result<(), Error> {
-    create_dir_all(DIR_PROJECT_PACKAGES.as_path())
+    create_dir_all(DIR_PACKAGES_SRC.as_path())
         .map_err(|error| Error {
             message: format!(
                 "failed to create directory: \"{}\"",
-                DIR_PROJECT_PACKAGES.to_string_lossy(),
+                DIR_PACKAGES_SRC.to_string_lossy(),
             ),
             source: Some(error),
         })?;

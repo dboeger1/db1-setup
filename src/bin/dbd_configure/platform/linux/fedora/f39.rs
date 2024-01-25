@@ -1,7 +1,7 @@
 use crate::{
     platform::{
         INSTALL_DIR,
-        linux::fedora::dnf_install,
+        linux::dnf_install,
         Platform,
     },
     source_destination::SourceDestination,
