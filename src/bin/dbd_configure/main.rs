@@ -4,7 +4,10 @@ mod source_destination;
 
 
 use platform::PLATFORM;
-use std::process::ExitCode;
+use std::{
+    error::Error,
+    process::ExitCode,
+};
 
 
 fn main() -> ExitCode {
@@ -18,7 +21,7 @@ fn main() -> ExitCode {
     if let Some(install_packages) = platform_data.install_packages {
         if let Err(error) = install_packages() {
             eprintln!("{}", error);
-            if let Some(source) = error.source {
+            if let Some(source) = error.source() {
                 eprintln!("{}", source);
             }
             return ExitCode::FAILURE;
