@@ -1,9 +1,18 @@
+use const_format::concatcp;
+use dboeger1_dotfiles::CARGO_NAME;
 use lazy_static::lazy_static;
 use std::{
     env::current_exe,
     path::PathBuf,
 };
 
+
+pub const CARGO_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const NAME_VERSION: &str = concatcp!(
+    CARGO_NAME,
+    "-",
+    CARGO_VERSION,
+);
 
 lazy_static! {
     pub(crate) static ref DIR_PROJECT_ROOT: PathBuf =
@@ -28,6 +37,16 @@ lazy_static! {
         .unwrap()
         .to_path_buf();
 
-    pub(crate) static ref DIR_PACKAGES: PathBuf =
+    pub(crate) static ref DIR_PROJECT_GIT: PathBuf =
+        DIR_PROJECT_ROOT.join(".git");
+    pub(crate) static ref DIR_PROJECT_TARGET: PathBuf =
+        DIR_PROJECT_ROOT.join("target");
+    pub(crate) static ref DIR_PROJECT_PACKAGES: PathBuf =
         DIR_PROJECT_ROOT.join("packages");
+
+    pub(crate) static ref FILE_TAR: PathBuf =
+        DIR_PROJECT_PACKAGES.join(format!(
+            "{}.tar.gz",
+            NAME_VERSION,
+        ));
 }

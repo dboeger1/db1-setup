@@ -1,9 +1,13 @@
 #[cfg(target_os = "linux")]
 mod linux;
+
+
+use crate::error::Error;
+
 #[cfg(target_os = "linux")]
 pub(crate) use linux::*;
 
 
 pub(crate) struct Platform {
-    pub(crate) stuff: fn (),
+    pub(crate) archive_sources: fn () -> Result<(), Error>,
 }

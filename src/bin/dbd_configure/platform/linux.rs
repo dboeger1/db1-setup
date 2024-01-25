@@ -1,11 +1,11 @@
 mod fedora;
 
 
-use crate::{
+use crate::platform::Platform;
+use dboeger1_dotfiles::{
     CARGO_NAME,
-    platform::Platform,
+    OS_INFO,
 };
-use dboeger1_dotfiles::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Type;
 use std::path::PathBuf;

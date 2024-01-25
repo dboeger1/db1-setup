@@ -5,6 +5,8 @@ use std::{
 };
 
 
+pub const CARGO_NAME: &str = env!("CARGO_PKG_NAME");
+
 lazy_static! {
     pub static ref OS_INFO: os_info::Info =
         os_info::get();

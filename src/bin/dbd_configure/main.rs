@@ -7,9 +7,6 @@ use platform::PLATFORM;
 use std::process::ExitCode;
 
 
-pub(crate) const CARGO_NAME: &str = env!("CARGO_PKG_NAME");
-
-
 fn main() -> ExitCode {
     if PLATFORM.is_none() {
         eprintln!("unrecognized platform");
