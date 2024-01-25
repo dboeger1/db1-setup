@@ -4,7 +4,7 @@ use std::fmt::Display;
 #[derive(Debug)]
 pub(crate) struct Error {
     pub(crate) message: String,
-    pub(crate) source: Option<std::io::Error>,
+    pub(crate) source: Option<Box<dyn std::error::Error>>,
 }
 
 impl Display for Error {
@@ -15,8 +15,9 @@ impl Display for Error {
 
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        self.source
+        self
+            .source
             .as_ref()
-            .map(|error| error as &(dyn std::error::Error + 'static))
+            .map(|error| error.as_ref())
     }
 }

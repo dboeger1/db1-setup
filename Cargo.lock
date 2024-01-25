@@ -124,6 +124,7 @@ dependencies = [
  "const_format",
  "lazy_static",
  "os_info",
+ "print-command-rs",
 ]
 
 [[package]]
@@ -154,6 +155,11 @@ dependencies = [
  "serde",
  "winapi",
 ]
+
+[[package]]
+name = "print-command-rs"
+version = "0.1.0"
+source = "git+https://github.com/dboeger1/print-command.git#190c759a4eb68c7a3f43154c6d5a7c89e14ad7f3"
 
 [[package]]
 name = "proc-macro2"

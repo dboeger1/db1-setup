@@ -12,7 +12,7 @@ pub(crate) fn clean() -> Result<(), Error> {
                 "failed to remove directory: {}",
                 DIR_PROJECT_PACKAGES.to_string_lossy(),
             ),
-            source: Some(error),
+            source: Some(Box::new(error)),
         });
     }
 

@@ -17,10 +17,10 @@ use crate::{
 use dboeger1_dotfiles::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Type;
+use print_command::run_and_print;
 use std::{
     fs::create_dir_all,
     process::Command,
-    str::from_utf8,
 };
 
 
@@ -40,7 +40,7 @@ pub(crate) fn tar_sources() -> Result<(), Error> {
                 "failed to create directory: \"{}\"",
                 DIR_PACKAGES_SRC.to_string_lossy(),
             ),
-            source: Some(error),
+            source: Some(Box::new(error)),
         })?;
 
     let mut tar_command = Command::new("tar");
@@ -83,71 +83,9 @@ pub(crate) fn tar_sources() -> Result<(), Error> {
         ".".to_string(),
     ]);
 
-    let mut tar_string = tar_command
-        .get_program()
-        .to_os_string();
-    tar_command
-        .get_args()
-        .for_each(|arg| tar_string.push(format!(
-            " {}",
-            arg.to_string_lossy(),
-        )));
-
-    let tar_output = tar_command
-        .output()
+    run_and_print(&mut tar_command, false)
         .map_err(|error| Error {
-            message: format!(
-                "failed to execute command: \"{}\"",
-                tar_string.to_string_lossy(),
-            ),
-            source: Some(error),
-        })?;
-    if !tar_output.status.success() {
-        // command
-        eprintln!("==== command ====");
-        eprintln!("{}", tar_string.to_string_lossy());
-
-        // exit code
-        let tar_exit_code = tar_output
-            .status
-            .code();
-        eprintln!("==== exit code ====");
-        eprintln!(
-            "{}",
-            tar_exit_code.map_or_else(
-                || "<failed to retrieve>".to_string(),
-                |status| status.to_string(),
-            ),
-        );
-
-        // stdout
-        let tar_stdout = from_utf8(&tar_output.stdout);
-        eprintln!("==== stdout ====");
-        if tar_stdout.is_ok() {
-            eprintln!(
-                "{}",
-                tar_stdout.unwrap_or("<failed to retrieve>"),
-            );
-        }
-
-        // stderr
-        let tar_stderr = from_utf8(&tar_output.stderr);
-        eprintln!("==== stderr ====");
-        if tar_stderr.is_ok() {
-            eprintln!(
-                "{}",
-                tar_stderr.unwrap_or("<failed to retrieve>"),
-            );
-        }
-
-        return Err(Error {
-            message: format!(
-                "tar command failed: \"{}\"",
-                tar_string.to_string_lossy(),
-            ),
-            source: None,
-        });
-    }
-
-    Ok(())
+            message: "command failed".to_string(),
+            source: Some(Box::new(error)),
+        })
 }
