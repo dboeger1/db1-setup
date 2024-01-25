@@ -5,10 +5,10 @@ use crate::{
 
 
 pub(crate) fn package() -> Result<(), Error> {
-    PLATFORM
+    (PLATFORM
         .as_ref()
         .unwrap()
-        .stuff();
+        .stuff)();
 
     Ok(())
 }

@@ -4,6 +4,6 @@ mod linux;
 pub(crate) use linux::*;
 
 
-pub(crate) trait Platform: Sync {
-    fn stuff(&self);
+pub(crate) struct Platform {
+    pub(crate) stuff: fn (),
 }

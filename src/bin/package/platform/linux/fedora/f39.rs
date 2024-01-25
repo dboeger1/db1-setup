@@ -1,11 +1,9 @@
 use crate::platform::Platform;
+use lazy_static::lazy_static;
 
-pub(crate) const PLATFORM: PlatformFedora39 = PlatformFedora39 {};
 
-pub(crate) struct PlatformFedora39 {}
-
-impl Platform for PlatformFedora39 {
-    fn stuff(&self) {
-        println!("f39 stuff");
-    }
+lazy_static! {
+    pub(crate) static ref PLATFORM: Platform = Platform {
+        stuff: || println!("f39 stuff"),
+    };
 }
