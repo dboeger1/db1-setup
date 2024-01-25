@@ -12,15 +12,14 @@ use os_info::Version;
 use std::{
     process::Command,
     str::from_utf8,
-    sync::Arc,
 };
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Option<Arc<&'static dyn Platform>> =
+    pub(crate) static ref PLATFORM: Option<&'static Platform> =
         match OS_INFO.version() {
-            Version::Semantic(38, 0, 0) => Some(Arc::new(&f38::PLATFORM)),
-            Version::Semantic(39, 0, 0) => Some(Arc::new(&f39::PLATFORM)),
+            Version::Semantic(38, 0, 0) => Some(&f38::PLATFORM),
+            Version::Semantic(39, 0, 0) => Some(&f39::PLATFORM),
             _ => None,
         };
 }
