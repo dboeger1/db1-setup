@@ -6,6 +6,7 @@ use std::fs::copy;
 
 
 pub(crate) fn configure_tmux(platform_data: &Platform) -> Result<(), Error> {
+    // Check if platform supports tmux configuration.
     if platform_data.tmux_paths.is_none() {
         return Ok(());
     }
@@ -14,6 +15,7 @@ pub(crate) fn configure_tmux(platform_data: &Platform) -> Result<(), Error> {
         .as_ref()
         .unwrap();
 
+    // Validate source.
     if !tmux_paths.source.exists() {
         return Err(Error {
             message: format!(
@@ -24,16 +26,40 @@ pub(crate) fn configure_tmux(platform_data: &Platform) -> Result<(), Error> {
         });
     }
 
-    if tmux_paths.destination.exists() {
+    if !tmux_paths.source.is_file() {
         return Err(Error {
             message: format!(
-                "cannot overwrite file: \"{}\"",
-                tmux_paths.destination.to_string_lossy(),
+                "not a regular file: \"{}\"",
+                tmux_paths.source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
+    // Validate destination.
+    if tmux_paths.destination.exists() {
+        return Err(Error {
+            message: if tmux_paths.destination.is_file() {
+                    format!(
+                        "cannot overwrite file: \"{}\"",
+                        tmux_paths.destination.to_string_lossy(),
+                    )
+                } else if tmux_paths.destination.is_dir() {
+                    format!(
+                        "cannot overwrite directory: \"{}\"",
+                        tmux_paths.destination.to_string_lossy(),
+                    )
+                } else {
+                    format!(
+                        "cannot overwrite destination: \"{}\"",
+                        tmux_paths.destination.to_string_lossy(),
+                    )
+                },
+            source: None,
+        });
+    }
+
+    // Copy source to destination.
     return copy(
         tmux_paths.source.as_path(),
         tmux_paths.destination.as_path(),
