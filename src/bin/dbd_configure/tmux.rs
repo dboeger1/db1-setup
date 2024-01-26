@@ -1,34 +1,52 @@
-use crate::configure_error::Error;
-use dboeger1_dotfiles::*;
+use crate::{
+    error::Error,
+    platform::Platform,
+};
 use std::fs::copy;
 
 
-pub(crate) fn configure_tmux() -> Result<(), Error> {
-    println!("Copying tmux configuration...");
+pub(crate) fn configure_tmux(platform_data: &Platform) -> Result<(), Error> {
+    if platform_data.tmux_paths.is_none() {
+        return Ok(());
+    }
+    let tmux_paths = platform_data
+        .tmux_paths
+        .as_ref()
+        .unwrap();
 
-    let source = INSTALL_TMUX_DIR.join(".tmux.conf");
-    let destination = HOME_DIR.join(".tmux.conf");
-
-    if destination.exists() {
+    if !tmux_paths.source.exists() {
         return Err(Error {
             message: format!(
-                "destination already exists: \"{}\"",
-                destination.to_string_lossy(),
+                "missing file: \"{}\"",
+                tmux_paths.source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
-    if let Err(error) = copy(source, &destination) {
+    if tmux_paths.destination.exists() {
         return Err(Error {
             message: format!(
-                "failed to copy tmux configuration to destination: \"{}\"",
-                destination.to_string_lossy(),
+                "cannot overwrite file: \"{}\"",
+                tmux_paths.destination.to_string_lossy(),
             ),
-            source: Some(error),
+            source: None,
         });
     }
 
-    println!("Done.");
-    Ok(())
+    return copy(
+        tmux_paths.source.as_path(),
+        tmux_paths.destination.as_path(),
+    )
+        .map_or_else(
+            |error| Err(Error {
+                message: format!(
+                    "failed to copy file: \"{}\" -> \"{}\"",
+                    tmux_paths.source.to_string_lossy(),
+                    tmux_paths.destination.to_string_lossy(),
+                ),
+                source: Some(Box::new(error)),
+            }),
+            |_| Ok(())
+        );
 }
