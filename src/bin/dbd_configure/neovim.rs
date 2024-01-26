@@ -1,8 +1,13 @@
+use std::fs::create_dir_all;
+
 use crate::{
     error::Error,
     platform::Platform,
 };
-use std::fs::copy;
+use fs_extra::dir::{
+    copy,
+    CopyOptions,
+};
 
 
 pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
@@ -59,15 +64,29 @@ pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
         });
     }
 
-    // Copy source to destination.
+    // Create destination.
+    create_dir_all(neovim_paths.destination.as_path())
+        .map_err(|error| Error {
+            message: format!(
+                "failed to create directory: \"{}\"",
+                neovim_paths.destination.to_string_lossy(),
+            ),
+            source: Some(Box::new(error)),
+        })?;
+
+    // Copy contents from source to destination.
     return copy(
         neovim_paths.source.as_path(),
         neovim_paths.destination.as_path(),
+        &CopyOptions {
+            content_only: true,
+            ..Default::default()
+        },
     )
         .map_or_else(
             |error| Err(Error {
                 message: format!(
-                    "failed to copy file: \"{}\" -> \"{}\"",
+                    "failed to copy directory contents: \"{}\" -> \"{}\"",
                     neovim_paths.source.to_string_lossy(),
                     neovim_paths.destination.to_string_lossy(),
                 ),
