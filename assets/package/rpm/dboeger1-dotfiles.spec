@@ -5,15 +5,12 @@ Summary: Collection of GitHub user dboeger1's personal configuration files
 
 License: MIT
 URL: https://github.com/dboeger1/%{name}
-Source0: 
-#
-#BuildRequires:
-#Requires:
+Source0: %{name}-%{version}.tar.gz
 
-BuildArch:
+BuildArch: %{_target_cpu}
 
-%global app_destination_dir /opt/%{name}
-%global app_source_dir %{buildroot}/%{app_destination_dir}
+%global dir_install_root /opt/%{name}
+%global dir_source_buildroot %{buildroot}/%{dir_install_root}
 
 %description
 
@@ -27,12 +24,12 @@ cargo build
 
 
 %install
-
-
-%check
+install -d %{dir_source_buildroot}
+cp -r assets/neovim %{dir_source_buildroot}/
+cp -r assets/tmux %{dir_source_buildroot}/
+install -D -t %{dir_source_buildroot}/ target/debug/dbd_configure
 
 
 %files
-
-
-%changelog
+%dir %{dir_install_root}
+%{dir_install_root}/
