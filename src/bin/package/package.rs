@@ -18,7 +18,7 @@ pub(crate) fn package() -> Result<(), Error> {
 
     let platform_data = PLATFORM.as_ref().unwrap();
     (platform_data.archive_sources)()?;
-    //(platform_data.package)()?;
+    (platform_data.package)()?;
 
     Ok(())
 }

@@ -10,4 +10,5 @@ pub(crate) use linux::*;
 
 pub(crate) struct Platform {
     pub(crate) archive_sources: fn () -> Result<(), Error>,
+    pub(crate) package: fn () -> Result<(), Error>,
 }

@@ -1,7 +1,7 @@
 use crate::{
     platform::{
         INSTALL_DIR,
-        linux::dnf_install,
+        linux::dnf::dnf_install,
         Platform,
     },
     source_destination::SourceDestination,
