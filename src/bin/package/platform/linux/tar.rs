@@ -17,7 +17,7 @@ use std::{
 };
 
 
-pub(crate) fn tar_sources() -> Result<(), Error> {
+pub(crate) fn archive_sources_tar() -> Result<(), Error> {
     create_dir_all(DIR_PACKAGES_SRC.as_path())
         .map_err(|error| Error {
             message: format!(
