@@ -18,7 +18,7 @@ where
 
     run_and_print(&mut dnf_command, false)
         .map_err(|error| Error {
-            message: "".to_string(),
-            source: Some(Box::new(error) as Box<dyn std::error::Error>),
+            message: "command error".to_string(),
+            source: Some(Box::new(error)),
         })
 }
