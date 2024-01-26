@@ -9,6 +9,7 @@ default-run = "package"
 [dependencies]
 clap = { version = "4.4.0", features = ["derive", "cargo"] }
 const_format = "0.2.32"
+fs_extra = "1.3.0"
 lazy_static = "1.4.0"
 os_info = "3.7.0"
 print-command-rs = { git = "https://github.com/dboeger1/print-command.git" }
