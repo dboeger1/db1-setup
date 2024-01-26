@@ -9,7 +9,10 @@ where
     I::Item: AsRef<str>,
 {
     let mut dnf_command = Command::new("dnf");
-    dnf_command.arg("install");
+    dnf_command.args([
+        "install",
+        "-y",
+    ]);
     packages
         .into_iter()
         .for_each(|package| {
