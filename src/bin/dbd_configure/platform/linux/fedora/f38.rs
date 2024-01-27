@@ -42,9 +42,6 @@ lazy_static! {
 const PACKAGES_STRING: &str = concat!(
     // Utilities
     r#"
-    bash
-    coreutils
-    diffutils
     fd-find
     git
     patch
@@ -52,6 +49,7 @@ const PACKAGES_STRING: &str = concat!(
     tree
     unzip
     wget
+    zip
     "#,
 
     // Applications
@@ -78,12 +76,12 @@ const PACKAGES_STRING: &str = concat!(
 
     // Python
     r#"
-    python
+    python3
     "#,
 
     // Javascript
     r#"
-    npm
+    nodejs-npm
     "#,
 
     // RPM
