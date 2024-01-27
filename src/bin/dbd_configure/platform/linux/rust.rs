@@ -1,5 +1,4 @@
 use crate::error::Error;
-use dboeger1_dotfiles::HOME_DIR;
 use print_command::run_and_print;
 use std::process::Command;
 
@@ -14,12 +13,9 @@ pub(crate) fn rustup_init() -> Result<(), Error> {
             source: Some(Box::new(error)),
         })?;
 
-    let mut source_command = Command::new("source");
-    source_command.arg(HOME_DIR.join(".cargo/env"));
-
-    run_and_print(&mut source_command, false)
-        .map_err(|error| Error {
-            message: "Error running source command.".to_string(),
-            source: Some(Box::new(error)),
-        })
+    println!(concat!(
+        "Must run \"source ${{HOME}}/.cargo/env\" or restart shell for ",
+        "environment changes to take effect.",
+    ));
+    Ok(())
 }
