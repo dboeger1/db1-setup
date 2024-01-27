@@ -23,7 +23,13 @@ lazy_static! {
                 source: INSTALL_DIR.join("tmux/.tmux.conf"),
                 destination: HOME_DIR.join(".tmux.conf"),
             }),
-        install_packages: Some(|| dnf_install(&*PACKAGES)),
+        install_packages: Some(|| {
+            dnf_install(&*PACKAGES)?;
+            dnf_install(["'dnf-command(copr)'"])?;
+            dnf_install(["ganto/lxc4"])?;
+
+            Ok(())
+        }),
     };
 
     // Packages to install.
