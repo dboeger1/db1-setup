@@ -14,7 +14,7 @@ pub(crate) fn rustup_init() -> Result<(), Error> {
         })?;
 
     println!(concat!(
-        "Must run \"source ${{HOME}}/.cargo/env\" or restart shell for ",
+        "Must run `source ${{HOME}}/.cargo/env` or restart shell for rust ",
         "environment changes to take effect.",
     ));
     Ok(())
