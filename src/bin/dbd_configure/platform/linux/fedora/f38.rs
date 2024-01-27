@@ -1,7 +1,10 @@
 use crate::{
     platform::{
         linux::{
-            dnf::dnf_install,
+            dnf::{
+                copr_enable,
+                install,
+            },
             INSTALL_DIR,
         },
         Platform,
@@ -24,9 +27,9 @@ lazy_static! {
                 destination: HOME_DIR.join(".tmux.conf"),
             }),
         install_packages: Some(|| {
-            dnf_install(&*PACKAGES)?;
-            dnf_install(["'dnf-command(copr)'"])?;
-            dnf_install(["ganto/lxc4"])?;
+            install(["dnf-command(copr)"])?;
+            copr_enable("ganto/lxc4")?;
+            install(&*PACKAGES)?;
 
             Ok(())
         }),
@@ -50,6 +53,7 @@ const PACKAGES_STRING: &str = concat!(
     r#"
     fd-find
     git
+    incus
     patch
     ripgrep
     tree
