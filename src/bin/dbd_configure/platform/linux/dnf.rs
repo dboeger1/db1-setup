@@ -13,15 +13,13 @@ where
         "install",
         "-y",
     ]);
-    packages
-        .into_iter()
-        .for_each(|package| {
-            dnf_command.arg(package.as_ref());
-        });
+    for package in packages {
+        dnf_command.arg(package.as_ref());
+    }
 
     run_and_print(&mut dnf_command, false)
         .map_err(|error| Error {
-            message: "command error".to_string(),
+            message: "Error running dnf command.".to_string(),
             source: Some(Box::new(error)),
         })
 }

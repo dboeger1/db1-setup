@@ -21,5 +21,5 @@ lazy_static! {
         };
 
     pub(crate) static ref INSTALL_DIR: PathBuf =
-        PathBuf::from(format!("/opt/{}", CARGO_NAME));
+        PathBuf::from(format!("/opt/{CARGO_NAME}"));
 }

@@ -9,7 +9,10 @@ use crate::{
     neovim::configure_neovim,
     tmux::configure_tmux,
 };
-use platform::PLATFORM;
+use platform::{
+    Platform,
+    PLATFORM,
+};
 use std::{
     error::Error,
     process::ExitCode,
@@ -17,42 +20,71 @@ use std::{
 
 
 fn main() -> ExitCode {
-    // Get platform data.
-    if PLATFORM.is_none() {
-        eprintln!("unrecognized platform");
+    let mut return_value = ExitCode::SUCCESS;
 
-        return ExitCode::FAILURE;
+    // Get platform data.
+    println!();
+    println!("Detecting platform...");
+
+    let platform: &Platform;
+    match PLATFORM.as_ref() {
+        Some(platform_data) => platform = platform_data,
+        None => {
+            eprintln!("Unrecognized platform. Aborting.");
+            eprintln!();
+            return ExitCode::FAILURE;
+        },
     }
-    let platform_data = PLATFORM.unwrap();
+
+    println!("Done.");
 
     // Install helpful packages.
-    if let Some(install_packages) = platform_data.install_packages {
+    if let Some(install_packages) = platform.install_packages {
+        println!();
+        println!("Installing helpful packages...");
+
         if let Err(error) = install_packages() {
-            eprintln!("{}", error);
+            eprintln!("Error: {error}");
             if let Some(source) = error.source() {
-                eprintln!("{}", source);
+                eprintln!("Source: {source}");
             }
-            return ExitCode::FAILURE;
+            return_value = ExitCode::FAILURE;
+        } else {
+            println!("Done.");
         }
     }
 
     // Configure tmux.
-    if let Err(error) = configure_tmux(&platform_data) {
-        eprintln!("{}", error);
-        if let Some(source) = error.source() {
-            eprintln!("{}", source);
+    if let Some(tmux_paths) = platform.tmux_paths.as_ref() {
+        println!();
+        println!("Copying tmux configuration...");
+
+        if let Err(error) = configure_tmux(tmux_paths) {
+            eprintln!("Error: {error}");
+            if let Some(source) = error.source() {
+                eprintln!("Source: {source}");
+            }
+            return_value = ExitCode::FAILURE;
+        } else {
+            println!("Done.");
         }
-        return ExitCode::FAILURE;
     }
 
     // Configure neovim.
-    if let Err(error) = configure_neovim(&platform_data) {
-        eprintln!("{}", error);
-        if let Some(source) = error.source() {
-            eprintln!("{}", source);
+    if let Some(neovim_paths) = platform.neovim_paths.as_ref() {
+        println!();
+        println!("Copying neovim configuration...");
+
+        if let Err(error) = configure_neovim(neovim_paths) {
+            eprintln!("Error: {error}");
+            if let Some(source) = error.source() {
+                eprintln!("Source: {source}");
+            }
+            return_value = ExitCode::FAILURE;
+        } else {
+            println!("Done.");
         }
-        return ExitCode::FAILURE;
     }
 
-    ExitCode::SUCCESS
+    return_value
 }

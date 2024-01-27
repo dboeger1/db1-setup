@@ -20,38 +20,26 @@ use std::{
 
 
 lazy_static! {
-    static ref DIR_PACKAGES_RPM: PathBuf =
-        DIR_PROJECT_PACKAGES.join("rpm");
+    static ref DIR_PACKAGES_RPM: PathBuf = DIR_PROJECT_PACKAGES.join("rpm");
 
-    static ref DIR_RPMBUILD: PathBuf =
-        DIR_PACKAGES_RPM.join("rpmbuild");
-    static ref DIR_RPMBUILD_BUILD: PathBuf =
-        DIR_RPMBUILD.join("BUILD");
-    static ref DIR_RPMBUILD_BUILDROOT: PathBuf =
-        DIR_RPMBUILD.join("BUILDROOT");
-    static ref DIR_RPMBUILD_RPMS: PathBuf =
-        DIR_RPMBUILD.join("RPMS");
-    static ref DIR_RPMBUILD_SOURCES: PathBuf =
-        DIR_RPMBUILD.join("SOURCES");
-    static ref DIR_RPMBUILD_SPECS: PathBuf =
-        DIR_RPMBUILD.join("SPECS");
-    static ref DIR_RPMBUILD_SRPMS: PathBuf =
-        DIR_RPMBUILD.join("SRPMS");
+    static ref DIR_RPMBUILD: PathBuf = DIR_PACKAGES_RPM.join("rpmbuild");
+    static ref DIR_RPMBUILD_BUILD: PathBuf = DIR_RPMBUILD.join("BUILD");
+    static ref DIR_RPMBUILD_BUILDROOT: PathBuf = DIR_RPMBUILD.join("BUILDROOT");
+    static ref DIR_RPMBUILD_RPMS: PathBuf = DIR_RPMBUILD.join("RPMS");
+    static ref DIR_RPMBUILD_SOURCES: PathBuf = DIR_RPMBUILD.join("SOURCES");
+    static ref DIR_RPMBUILD_SPECS: PathBuf = DIR_RPMBUILD.join("SPECS");
+    static ref DIR_RPMBUILD_SRPMS: PathBuf = DIR_RPMBUILD.join("SRPMS");
 
-    static ref FILE_TAR_COPY: PathBuf =
-        DIR_RPMBUILD_SOURCES.join(
-            FILE_TAR.file_name().unwrap()
-        );
+    static ref FILE_TAR_COPY: PathBuf = DIR_RPMBUILD_SOURCES.join(
+        FILE_TAR.file_name().unwrap()
+    );
 
-    static ref FILE_SPEC: PathBuf =
-        DIR_PROJECT_ROOT.join(format!(
-            "assets/package/rpm/{}.spec",
-            CARGO_NAME,
-        ));
-    static ref FILE_SPEC_COPY: PathBuf =
-        DIR_RPMBUILD_SPECS.join(
-            FILE_SPEC.file_name().unwrap()
-        );
+    static ref FILE_SPEC: PathBuf = DIR_PROJECT_ROOT.join(
+        format!("assets/package/rpm/{CARGO_NAME}.spec"),
+    );
+    static ref FILE_SPEC_COPY: PathBuf = DIR_RPMBUILD_SPECS.join(
+        FILE_SPEC.file_name().unwrap()
+    );
 }
 
 
@@ -68,7 +56,7 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
         create_dir_all(directory)
             .map_err(|error| Error {
                 message: format!(
-                    "failed to create directory: \"{}\"",
+                    "Failed to create directory: {}",
                     directory.to_string_lossy(),
                 ),
                 source: Some(Box::new(error)),
@@ -83,7 +71,7 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
         .map_or_else(
             |error| Err(Error {
                 message: format!(
-                    "failed to copy file: \"{}\" -> \"{}\"",
+                    "Failed to copy file: {} -> {}",
                     FILE_TAR.to_string_lossy(),
                     FILE_TAR_COPY.to_string_lossy(),
                 ),
@@ -100,7 +88,7 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
         .map_or_else(
             |error| Err(Error {
                 message: format!(
-                    "failed to copy file: \"{}\" -> \"{}\"",
+                    "Failed to copy file: {} -> {}",
                     FILE_SPEC.to_string_lossy(),
                     FILE_SPEC_COPY.to_string_lossy(),
                 ),
@@ -122,7 +110,7 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
 
     run_and_print(&mut rpmbuild_command, false)
         .map_err(|error| Error {
-            message: "command error".to_string(),
+            message: "Error running rpmbuild command.".to_string(),
             source: Some(Box::new(error)),
         })
 }

@@ -2,7 +2,7 @@ use std::fs::create_dir_all;
 
 use crate::{
     error::Error,
-    platform::Platform,
+    source_destination::SourceDestination,
 };
 use fs_extra::dir::{
     copy,
@@ -10,21 +10,14 @@ use fs_extra::dir::{
 };
 
 
-pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
-    // Check if platform supports neovim configuration.
-    if platform_data.neovim_paths.is_none() {
-        return Ok(());
-    }
-    let neovim_paths = platform_data
-        .neovim_paths
-        .as_ref()
-        .unwrap();
-
+pub(crate) fn configure_neovim(
+    neovim_paths: &SourceDestination,
+) -> Result<(), Error> {
     // Validate source.
     if !neovim_paths.source.exists() {
         return Err(Error {
             message: format!(
-                "missing directory: \"{}\"",
+                "Missing directory: {}",
                 neovim_paths.source.to_string_lossy(),
             ),
             source: None,
@@ -34,7 +27,7 @@ pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
     if !neovim_paths.source.is_dir() {
         return Err(Error {
             message: format!(
-                "not a directory: \"{}\"",
+                "Not a directory: {}",
                 neovim_paths.source.to_string_lossy(),
             ),
             source: None,
@@ -46,17 +39,17 @@ pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
         return Err(Error {
             message: if neovim_paths.destination.is_file() {
                     format!(
-                        "cannot overwrite file: \"{}\"",
+                        "Cannot overwrite file: {}",
                         neovim_paths.destination.to_string_lossy(),
                     )
                 } else if neovim_paths.destination.is_dir() {
                     format!(
-                        "cannot overwrite directory: \"{}\"",
+                        "Cannot overwrite directory: {}",
                         neovim_paths.destination.to_string_lossy(),
                     )
                 } else {
                     format!(
-                        "cannot overwrite destination: \"{}\"",
+                        "Cannot overwrite destination: {}",
                         neovim_paths.destination.to_string_lossy(),
                     )
                 },
@@ -68,7 +61,7 @@ pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
     create_dir_all(neovim_paths.destination.as_path())
         .map_err(|error| Error {
             message: format!(
-                "failed to create directory: \"{}\"",
+                "Failed to create directory: {}",
                 neovim_paths.destination.to_string_lossy(),
             ),
             source: Some(Box::new(error)),
@@ -86,7 +79,7 @@ pub(crate) fn configure_neovim(platform_data: &Platform) -> Result<(), Error> {
         .map_or_else(
             |error| Err(Error {
                 message: format!(
-                    "failed to copy directory contents: \"{}\" -> \"{}\"",
+                    "Failed to copy directory contents: {} -> {}",
                     neovim_paths.source.to_string_lossy(),
                     neovim_paths.destination.to_string_lossy(),
                 ),

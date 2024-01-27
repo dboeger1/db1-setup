@@ -1,13 +1,15 @@
 #[cfg(target_os = "linux")]
 mod linux;
-#[cfg(target_os = "linux")]
-pub(crate) use linux::*;
 
 
 use crate::{
     error::Error,
     source_destination::SourceDestination,
 };
+
+#[cfg(target_os = "linux")]
+pub(crate) use linux::PLATFORM;
+
 
 pub(crate) struct Platform {
     pub(crate) neovim_paths: Option<SourceDestination>,

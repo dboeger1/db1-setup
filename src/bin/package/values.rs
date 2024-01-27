@@ -8,11 +8,7 @@ use std::{
 
 
 pub const CARGO_VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const NAME_VERSION: &str = concatcp!(
-    CARGO_NAME,
-    "-",
-    CARGO_VERSION,
-);
+pub const NAME_VERSION: &str = concatcp!(CARGO_NAME, "-", CARGO_VERSION);
 
 lazy_static! {
     pub(crate) static ref DIR_PROJECT_ROOT: PathBuf =
@@ -48,8 +44,5 @@ lazy_static! {
         DIR_PROJECT_PACKAGES.join("src");
 
     pub(crate) static ref FILE_TAR: PathBuf =
-        DIR_PACKAGES_SRC.join(format!(
-            "{}.tar.gz",
-            NAME_VERSION,
-        ));
+        DIR_PACKAGES_SRC.join(format!("{NAME_VERSION}.tar.gz"));
 }

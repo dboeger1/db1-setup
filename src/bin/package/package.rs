@@ -1,24 +1,23 @@
 use crate::{
     error::Error,
-    platform::PLATFORM,
+    platform::Platform,
     values::DIR_PROJECT_PACKAGES,
 };
 
 
-pub(crate) fn package() -> Result<(), Error> {
+pub(crate) fn package(platform: &Platform) -> Result<(), Error> {
     if DIR_PROJECT_PACKAGES.exists() {
         return Err(Error {
             message: format!(
-                "cannot overwrite existing directory: \"{}\"",
+                "Cannot overwrite directory: {}",
                 DIR_PROJECT_PACKAGES.to_string_lossy(),
             ),
             source: None,
         });
     }
 
-    let platform_data = PLATFORM.as_ref().unwrap();
-    (platform_data.archive_sources)()?;
-    (platform_data.package)()?;
+    (platform.archive_sources)()?;
+    (platform.package)()?;
 
     Ok(())
 }

@@ -5,7 +5,7 @@ mod linux;
 use crate::error::Error;
 
 #[cfg(target_os = "linux")]
-pub(crate) use linux::*;
+pub(crate) use linux::PLATFORM;
 
 
 pub(crate) struct Platform {
