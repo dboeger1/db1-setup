@@ -1,5 +1,6 @@
 mod dnf;
 mod fedora;
+mod rust;
 
 
 use crate::platform::Platform;

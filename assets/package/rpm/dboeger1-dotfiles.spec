@@ -25,9 +25,11 @@ cargo build
 
 %install
 install -d %{dir_source_buildroot}
+install -D -t %{dir_source_buildroot}/ LICENSE
+install -D -t %{dir_source_buildroot}/ target/debug/dbd_configure
+cp -r assets/incus %{dir_source_buildroot}/
 cp -r assets/neovim %{dir_source_buildroot}/
 cp -r assets/tmux %{dir_source_buildroot}/
-install -D -t %{dir_source_buildroot}/ target/debug/dbd_configure
 
 
 %files

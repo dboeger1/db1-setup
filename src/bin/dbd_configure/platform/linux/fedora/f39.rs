@@ -6,6 +6,7 @@ use crate::{
                 install,
             },
             INSTALL_DIR,
+            rust::rustup_init,
         },
         Platform,
     },
@@ -30,6 +31,7 @@ lazy_static! {
             install(["dnf-command(copr)"])?;
             copr_enable("ganto/lxc4")?;
             install(&*PACKAGES)?;
+            rustup_init()?;
 
             Ok(())
         }),
