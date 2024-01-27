@@ -42,16 +42,13 @@ lazy_static! {
 const PACKAGES_STRING: &str = concat!(
     // Utilities
     r#"
-    bash
-    coreutils
-    diffutils
     fd-find
     git
     patch
     ripgrep
     tree
-    unzip
     wget
+    zip
     "#,
 
     // Applications
@@ -74,11 +71,6 @@ const PACKAGES_STRING: &str = concat!(
     // Rust
     r#"
     rustup
-    "#,
-
-    // Python
-    r#"
-    python
     "#,
 
     // Javascript

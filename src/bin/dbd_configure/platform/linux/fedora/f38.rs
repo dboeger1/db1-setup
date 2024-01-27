@@ -47,7 +47,6 @@ const PACKAGES_STRING: &str = concat!(
     patch
     ripgrep
     tree
-    unzip
     wget
     zip
     "#,
@@ -72,11 +71,6 @@ const PACKAGES_STRING: &str = concat!(
     // Rust
     r#"
     rustup
-    "#,
-
-    // Python
-    r#"
-    python3
     "#,
 
     // Javascript
