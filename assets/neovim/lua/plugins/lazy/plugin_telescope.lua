@@ -12,10 +12,6 @@
 --]]
 
 
--- Key Map
-vim.api.nvim_set_keymap('n', '<Leader>f', ':Telescope<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('v', '<Leader>f', ':Telescope<CR>', {noremap = true, silent = true})
-
 -- Lazy Spec
 return {
     'nvim-telescope/telescope.nvim',
@@ -33,5 +29,11 @@ return {
 
         -- Load FZF Extension
         telescope.load_extension('fzf')
+
+        -- Key maps.
+        vim.api.nvim_set_keymap('n', '<Leader>F', ':Telescope<CR>', {noremap = true, silent = true})
+        vim.keymap.set('n', '<Leader>ff', require('telescope.builtin').find_files, { desc = 'Find [F]iles' })
+        vim.keymap.set('n', '<Leader>fg', require('telescope.builtin').live_grep, { desc = 'Live [G]rep' })
+        vim.keymap.set('n', '<Leader>fw', require('telescope.builtin').grep_string, { desc = 'Find [W]ord' })
     end,
 }
