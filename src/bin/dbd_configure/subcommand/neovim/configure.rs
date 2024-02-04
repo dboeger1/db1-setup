@@ -1,6 +1,5 @@
 use crate::{
     error::Error,
-    platform::Platform,
     source_destination::SourceDestination,
 };
 use fs_extra::dir::{
@@ -10,27 +9,7 @@ use fs_extra::dir::{
 use std::fs::create_dir_all;
 
 
-pub(crate) fn subcommand_neovim(platform: &Platform) -> Result<(), Error> {
-    if let Some(neovim_paths) = platform.neovim_paths.as_ref() {
-        println!("Copying Neovim configuration...");
-        println!(
-            "\tSource: {}",
-            neovim_paths.source.to_string_lossy(),
-        );
-        println!(
-            "\tDestination: {}",
-            neovim_paths.destination.to_string_lossy(),
-        );
-
-        configure_neovim(neovim_paths)?;
-
-        println!("Done.");
-    }
-
-    Ok(())
-}
-
-fn configure_neovim(
+pub(crate) fn configure_neovim(
     neovim_paths: &SourceDestination,
 ) -> Result<(), Error> {
     // Validate source.

@@ -1,28 +1,12 @@
 mod args;
 mod error;
-mod git;
-mod incus;
-mod install;
-mod neovim;
 mod platform;
 mod source_destination;
-mod ssh;
-mod tmux;
+mod subcommand;
 
 
+use args::Args;
 use clap::Parser;
-use crate::{
-    args::{
-        Args,
-        ArgsSubcommand,
-    },
-    git::subcommand_git,
-    incus::subcommand_incus,
-    install::subcommand_install,
-    neovim::subcommand_neovim,
-    ssh::subcommand_ssh,
-    tmux::subcommand_tmux,
-};
 use platform::{
     Platform,
     PLATFORM,
@@ -31,6 +15,7 @@ use std::{
     error::Error,
     process::ExitCode,
 };
+use subcommand::execute_subcommand;
 
 
 fn main() -> ExitCode {
@@ -48,14 +33,7 @@ fn main() -> ExitCode {
     let args = Args::parse();
 
     // Execute subcommand.
-    if let Err(error) = match args.subcommand {
-        ArgsSubcommand::Git => subcommand_git(platform),
-        ArgsSubcommand::Incus => subcommand_incus(platform),
-        ArgsSubcommand::Install => subcommand_install(platform),
-        ArgsSubcommand::Neovim => subcommand_neovim(platform),
-        ArgsSubcommand::Ssh => subcommand_ssh(platform),
-        ArgsSubcommand::Tmux => subcommand_tmux(platform),
-    } {
+    if let Err(error) = execute_subcommand(platform, args.subcommand) {
         eprintln!("Error: {error}");
         if let Some(source) = error.source() {
             eprintln!("Source: {source}");

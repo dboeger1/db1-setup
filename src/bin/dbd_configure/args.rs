@@ -1,7 +1,5 @@
-use clap::{
-    Parser,
-    Subcommand,
-};
+use clap::Parser;
+use crate::subcommand::Subcommand;
 
 
 #[derive(Parser)]
@@ -9,15 +7,5 @@ use clap::{
 #[command(version)]
 pub(crate) struct Args {
     #[command(subcommand)]
-    pub(crate) subcommand: ArgsSubcommand,
-}
-
-#[derive(Subcommand, Hash, PartialEq, Eq)]
-pub(crate) enum ArgsSubcommand {
-    Git,
-    Incus,
-    Install,
-    Neovim,
-    Tmux,
-    Ssh,
+    pub(crate) subcommand: Subcommand,
 }
