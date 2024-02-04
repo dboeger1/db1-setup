@@ -15,4 +15,5 @@ pub(crate) struct Platform {
     pub(crate) neovim_paths: Option<SourceDestination>,
     pub(crate) tmux_paths: Option<SourceDestination>,
     pub(crate) install_packages: Option<fn() -> Result<(), Error>>,
+    pub(crate) configure_ssh: Option<fn() -> Result<(), Error>>,
 }

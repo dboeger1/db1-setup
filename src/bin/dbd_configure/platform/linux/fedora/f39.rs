@@ -7,6 +7,7 @@ use crate::{
             },
             INSTALL_DIR,
             rust::rustup_init,
+            ssh::configure_ssh,
         },
         Platform,
     },
@@ -35,6 +36,7 @@ lazy_static! {
 
             Ok(())
         }),
+        configure_ssh: Some(configure_ssh),
     };
 
     // Packages to install.
