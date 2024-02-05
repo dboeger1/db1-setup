@@ -1,6 +1,3 @@
-mod args;
-
-
 use crate::{
     error::Error,
     platform::Platform,
@@ -16,7 +13,12 @@ use std::fs::{
     remove_file,
 };
 
-pub(crate) use args::Args;
+
+#[derive(clap::Args, PartialEq, Eq)]
+pub(crate) struct Args {
+    #[arg(short, long)]
+    force: bool,
+}
 
 
 pub(crate) fn subcommand_neovim(

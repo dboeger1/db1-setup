@@ -1,11 +1,9 @@
-mod args;
 mod error;
 mod platform;
 mod source_destination;
 mod subcommand;
 
 
-use args::Args;
 use clap::Parser;
 use platform::{
     Platform,
@@ -15,7 +13,19 @@ use std::{
     error::Error,
     process::ExitCode,
 };
-use subcommand::execute_subcommand;
+use subcommand::{
+    execute_subcommand,
+    Subcommand,
+};
+
+
+#[derive(Parser)]
+#[command(name = env!("CARGO_CRATE_NAME"))]
+#[command(version)]
+struct Args {
+    #[command(subcommand)]
+    subcommand: Subcommand,
+}
 
 
 fn main() -> ExitCode {

@@ -1,4 +1,3 @@
-mod args;
 mod clean;
 mod error;
 mod package;
@@ -6,7 +5,6 @@ mod platform;
 mod values;
 
 
-use args::Args;
 use clap::Parser;
 use crate::{
     clean::clean,
@@ -17,6 +15,15 @@ use std::{
     error::Error,
     process::ExitCode,
 };
+
+
+#[derive(Parser)]
+#[command(name = env!("CARGO_CRATE_NAME"))]
+#[command(version)]
+struct Args {
+    #[arg(short, long)]
+    clean: bool,
+}
 
 
 pub fn main() -> ExitCode {
