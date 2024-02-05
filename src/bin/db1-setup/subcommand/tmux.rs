@@ -5,14 +5,19 @@ use crate::{
     error::Error,
     platform::Platform,
 };
-use std::fs::copy;
+use std::fs::{
+    copy,
+    metadata,
+    remove_dir_all,
+    remove_file,
+};
 
 pub(crate) use args::Args;
 
 
 pub(crate) fn subcommand_tmux(
     platform: &Platform,
-    _args: &Args,
+    args: &Args,
 ) -> Result<(), Error> {
     let paths = &platform.tmux_paths;
 
@@ -48,24 +53,77 @@ pub(crate) fn subcommand_tmux(
     }
 
     // Validate destination.
-    if paths.destination.exists() {
+    if paths.destination.is_symlink() {
+        match args.force {
+            true => if let Err(error) = remove_file(&paths.destination) {
+                return Err(Error {
+                    message: format!(
+                        "Failed to overwrite symlink: {}",
+                        paths.destination.to_string_lossy(),
+                    ),
+                    source: Some(Box::new(error)),
+                });
+            },
+            false => return Err(Error {
+                message: format!(
+                    "Cannot overwrite symlink: {}",
+                    paths.destination.to_string_lossy(),
+                ),
+                source: None,
+            }),
+        }
+    }
+
+    if paths.destination.is_file() {
+        match args.force {
+            true => if let Err(error) = remove_file(&paths.destination) {
+                return Err(Error {
+                    message: format!(
+                        "Failed to overwrite file: {}",
+                        paths.destination.to_string_lossy(),
+                    ),
+                    source: Some(Box::new(error)),
+                });
+            },
+            false => return Err(Error {
+                message: format!(
+                    "Cannot overwrite file: {}",
+                    paths.destination.to_string_lossy(),
+                ),
+                source: None,
+            }),
+        }
+    }
+
+    if paths.destination.is_dir() {
+        match args.force {
+            true => if let Err(error) = remove_dir_all(&paths.destination) {
+                return Err(Error {
+                    message: format!(
+                        "Failed to overwrite directory: {}",
+                        paths.destination.to_string_lossy(),
+                    ),
+                    source: Some(Box::new(error)),
+                });
+            },
+            false => return Err(Error {
+                message: format!(
+                    "Cannot overwrite directory: {}",
+                    paths.destination.to_string_lossy(),
+                ),
+                source: None,
+            }),
+        }
+    }
+
+    // We should have either returned an error or deleted the existing file by
+    // now. Maybe this should panic?
+    if metadata(&paths.destination).is_ok() {
         return Err(Error {
-            message: if paths.destination.is_file() {
-                    format!(
-                        "Cannot overwrite file: {}",
-                        paths.destination.to_string_lossy(),
-                    )
-                } else if paths.destination.is_dir() {
-                    format!(
-                        "Cannot overwrite directory: {}",
-                        paths.destination.to_string_lossy(),
-                    )
-                } else {
-                    format!(
-                        "Cannot overwrite destination: {}",
-                        paths.destination.to_string_lossy(),
-                    )
-                },
+            message: format!(
+                "Cannot overwrite destination: {}",
+                paths.destination.to_string_lossy(),
+            ),
             source: None,
         });
     }
