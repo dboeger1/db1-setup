@@ -9,13 +9,9 @@ use crate::{
 pub(crate) use args::Args;
 
 
-pub fn subcommand_ssh(
+pub(crate) fn subcommand_ssh(
     platform: &Platform,
     _args: &Args,
 ) -> Result<(), Error> {
-    if let Some(configure_ssh) = platform.configure_ssh {
-        return configure_ssh();
-    }
-
-    Ok(())
+    (platform.configure_ssh)()
 }

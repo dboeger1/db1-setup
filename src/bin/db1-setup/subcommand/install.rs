@@ -5,9 +5,5 @@ use crate::{
 
 
 pub fn subcommand_install(platform: &Platform) -> Result<(), Error> {
-    if let Some(install_packages) = platform.install_packages {
-        return install_packages();
-    }
-
-    Ok(())
+    (platform.install_packages)()
 }

@@ -3,7 +3,7 @@ mod f39;
 
 
 use crate::platform::Platform;
-use dboeger1_dotfiles::OS_INFO;
+use db1_setup::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Version;
 

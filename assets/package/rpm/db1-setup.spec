@@ -1,4 +1,4 @@
-Name: dboeger1-dotfiles
+Name: db1-setup
 Version: 0.1.0
 Release: 1%{?dist}
 Summary: Collection of GitHub user dboeger1's personal configuration files
@@ -26,7 +26,7 @@ cargo build
 %install
 install -d %{dir_source_buildroot}
 install -D -t %{dir_source_buildroot}/ LICENSE
-install -D -t %{dir_source_buildroot}/ target/debug/dbd_configure
+install -D -t %{dir_source_buildroot}/ target/debug/%{name}
 cp -r assets/incus %{dir_source_buildroot}/
 cp -r assets/neovim %{dir_source_buildroot}/
 cp -r assets/tmux %{dir_source_buildroot}/

@@ -6,7 +6,7 @@ use crate::{
         FILE_TAR,
     },
 };
-use dboeger1_dotfiles::CARGO_NAME;
+use db1_setup::CARGO_NAME;
 use lazy_static::lazy_static;
 use print_command::run_and_print;
 use std::{

@@ -1,9 +1,8 @@
 Some Incus configurations have potentially serious security implications, so I
-decided to have `dbd_configure` install incus without initializing it or
-otherwise configuring the system to use it. Therefore, it is the end user's
-responsibility to initialize/configure incus as appropriate. I am simply
-including this file here as a reminder of steps I usually take after installing
-incus.
+decided to have `db1-setup` install incus without initializing it or otherwise
+configuring the system to use it. Therefore, it is the end user's responsibility
+to initialize/configure incus as appropriate. I am simply including this file
+here as a reminder of steps I usually take after installing incus.
 
 References:
     https://linuxcontainers.org/incus/docs/main/installing/#installing

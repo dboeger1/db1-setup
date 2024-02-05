@@ -5,7 +5,7 @@ mod ssh;
 
 
 use crate::platform::Platform;
-use dboeger1_dotfiles::{
+use db1_setup::{
     CARGO_NAME,
     OS_INFO,
 };

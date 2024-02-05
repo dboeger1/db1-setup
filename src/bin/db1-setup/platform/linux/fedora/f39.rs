@@ -13,30 +13,30 @@ use crate::{
     },
     source_destination::SourceDestination,
 };
-use dboeger1_dotfiles::HOME_DIR;
+use db1_setup::HOME_DIR;
 use lazy_static::lazy_static;
 
 
 lazy_static! {
     // Platform data.
     pub(crate) static ref PLATFORM: Platform = Platform {
-        neovim_paths: Some(SourceDestination {
-                source: INSTALL_DIR.join("neovim"),
-                destination: HOME_DIR.join(".config/nvim"),
-            }),
-        tmux_paths: Some(SourceDestination {
-                source: INSTALL_DIR.join("tmux/.tmux.conf"),
-                destination: HOME_DIR.join(".tmux.conf"),
-            }),
-        install_packages: Some(|| {
+        configure_ssh: configure_ssh,
+        install_packages: || {
             install(["dnf-command(copr)"])?;
             copr_enable("ganto/lxc4")?;
             install(&*PACKAGES)?;
             rustup_init()?;
 
             Ok(())
-        }),
-        configure_ssh: Some(configure_ssh),
+        },
+        neovim_paths: SourceDestination {
+                source: INSTALL_DIR.join("neovim"),
+                destination: HOME_DIR.join(".config/nvim"),
+            },
+        tmux_paths: SourceDestination {
+                source: INSTALL_DIR.join("tmux/.tmux.conf"),
+                destination: HOME_DIR.join(".tmux.conf"),
+            },
     };
 
     // Packages to install.
@@ -89,7 +89,7 @@ const PACKAGES_STRING: &str = concat!(
 
     // Javascript
     r#"
-    nodejs-npm
+    npm
     "#,
 
     // RPM

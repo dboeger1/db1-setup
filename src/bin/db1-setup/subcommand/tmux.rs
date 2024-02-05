@@ -1,51 +1,69 @@
+mod args;
+
+
 use crate::{
     error::Error,
-    source_destination::SourceDestination,
+    platform::Platform,
 };
 use std::fs::copy;
 
+pub(crate) use args::Args;
 
-pub(crate) fn configure_tmux(
-    tmux_paths: &SourceDestination,
+
+pub(crate) fn subcommand_tmux(
+    platform: &Platform,
+    _args: &Args,
 ) -> Result<(), Error> {
+    let paths = &platform.tmux_paths;
+
+    println!("Copying tmux configuration...");
+    println!(
+        "\tSource: {}",
+        paths.source.to_string_lossy(),
+    );
+    println!(
+        "\tDestination: {}",
+        paths.destination.to_string_lossy(),
+    );
+
     // Validate source.
-    if !tmux_paths.source.exists() {
+    if !paths.source.exists() {
         return Err(Error {
             message: format!(
                 "Missing file: {}",
-                tmux_paths.source.to_string_lossy(),
+                paths.source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
-    if !tmux_paths.source.is_file() {
+    if !paths.source.is_file() {
         return Err(Error {
             message: format!(
                 "Not a regular file: {}",
-                tmux_paths.source.to_string_lossy(),
+                paths.source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
     // Validate destination.
-    if tmux_paths.destination.exists() {
+    if paths.destination.exists() {
         return Err(Error {
-            message: if tmux_paths.destination.is_file() {
+            message: if paths.destination.is_file() {
                     format!(
                         "Cannot overwrite file: {}",
-                        tmux_paths.destination.to_string_lossy(),
+                        paths.destination.to_string_lossy(),
                     )
-                } else if tmux_paths.destination.is_dir() {
+                } else if paths.destination.is_dir() {
                     format!(
                         "Cannot overwrite directory: {}",
-                        tmux_paths.destination.to_string_lossy(),
+                        paths.destination.to_string_lossy(),
                     )
                 } else {
                     format!(
                         "Cannot overwrite destination: {}",
-                        tmux_paths.destination.to_string_lossy(),
+                        paths.destination.to_string_lossy(),
                     )
                 },
             source: None,
@@ -53,19 +71,19 @@ pub(crate) fn configure_tmux(
     }
 
     // Copy source to destination.
-    return copy(
-        tmux_paths.source.as_path(),
-        tmux_paths.destination.as_path(),
+    copy(
+        paths.source.as_path(),
+        paths.destination.as_path(),
     )
         .map_or_else(
             |error| Err(Error {
                 message: format!(
                     "Failed to copy file: {} -> {}",
-                    tmux_paths.source.to_string_lossy(),
-                    tmux_paths.destination.to_string_lossy(),
+                    paths.source.to_string_lossy(),
+                    paths.destination.to_string_lossy(),
                 ),
                 source: Some(Box::new(error)),
             }),
             |_| Ok(())
-        );
+        )
 }
