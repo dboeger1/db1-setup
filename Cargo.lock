@@ -97,14 +97,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 
 [[package]]
-name = "common"
-version = "0.1.0"
-dependencies = [
- "lazy_static",
- "os_info",
-]
-
-[[package]]
 name = "const_format"
 version = "0.2.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -129,7 +121,6 @@ name = "db1-setup"
 version = "0.1.0"
 dependencies = [
  "clap",
- "common",
  "fs_extra",
  "lazy_static",
  "os_info",
@@ -176,8 +167,8 @@ name = "package"
 version = "0.1.0"
 dependencies = [
  "clap",
- "common",
  "const_format",
+ "db1-setup",
  "lazy_static",
  "os_info",
  "print-command-rs",

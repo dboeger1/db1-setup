@@ -3,8 +3,8 @@ mod rpm;
 mod tar;
 
 
-use common::OS_INFO;
 use crate::platform::Platform;
+use db1_setup::OS_INFO;
 use lazy_static::lazy_static;
 use os_info::Type;
 
