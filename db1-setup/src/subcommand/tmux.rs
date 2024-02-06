@@ -11,9 +11,9 @@ use std::fs::{
 
 
 #[derive(clap::Args, PartialEq, Eq)]
-pub(crate) struct Args {
+pub struct Args {
     #[arg(short, long)]
-    force: bool,
+    pub force: bool,
 }
 
 

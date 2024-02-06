@@ -21,7 +21,7 @@ use tmux::subcommand_tmux;
 
 
 #[derive(clap::Subcommand, PartialEq, Eq)]
-pub(crate) enum Subcommand {
+pub enum Subcommand {
     Hostname,
     Incus,
     Install,
@@ -34,7 +34,7 @@ pub(crate) enum Subcommand {
 
 pub(crate) fn execute_subcommand(
     platform: &Platform,
-    args_subcommand: Subcommand,
+    args_subcommand: &Subcommand,
 ) -> Result<(), Error> {
     match args_subcommand {
         Subcommand::Hostname => subcommand_hostname(platform),

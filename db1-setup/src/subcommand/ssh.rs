@@ -5,12 +5,12 @@ use crate::{
 
 
 #[derive(clap::Args, PartialEq, Eq)]
-pub(crate) struct Args {
+pub struct Args {
     #[arg(short, long)]
-    comment: Option<String>,
+    pub comment: Option<String>,
 
     #[arg(short, long)]
-    force: bool,
+    pub force: bool,
 }
 
 

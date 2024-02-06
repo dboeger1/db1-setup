@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 
 #[derive(Debug)]
-pub(crate) struct Error {
+pub struct Error {
     pub(crate) message: String,
     pub(crate) source: Option<Box<dyn std::error::Error>>,
 }
