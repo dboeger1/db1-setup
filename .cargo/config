@@ -1,2 +1,6 @@
+[alias]
+rs = "run --package db1-setup"
+rp = "run --package package"
+
 [net]
 git-fetch-with-cli = true

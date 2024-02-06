@@ -1,3 +1,4 @@
+use common::CARGO_NAME;
 use crate::{
     error::Error,
     values::{
@@ -6,7 +7,6 @@ use crate::{
         FILE_TAR,
     },
 };
-use db1_setup::CARGO_NAME;
 use lazy_static::lazy_static;
 use print_command::run_and_print;
 use std::{

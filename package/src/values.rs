@@ -1,5 +1,5 @@
+use common::CARGO_NAME;
 use const_format::concatcp;
-use db1_setup::CARGO_NAME;
 use lazy_static::lazy_static;
 use std::{
     env::current_exe,

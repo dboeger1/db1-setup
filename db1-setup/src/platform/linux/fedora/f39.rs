@@ -1,3 +1,4 @@
+use common::HOME_DIR;
 use crate::{
     platform::{
         linux::{
@@ -13,7 +14,6 @@ use crate::{
     },
     source_destination::SourceDestination,
 };
-use db1_setup::HOME_DIR;
 use lazy_static::lazy_static;
 
 
@@ -89,7 +89,7 @@ const PACKAGES_STRING: &str = concat!(
 
     // Javascript
     r#"
-    nodejs-npm
+    npm
     "#,
 
     // RPM

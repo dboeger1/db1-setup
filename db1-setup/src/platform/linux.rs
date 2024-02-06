@@ -4,11 +4,11 @@ mod rust;
 mod ssh;
 
 
-use crate::platform::Platform;
-use db1_setup::{
+use common::{
     CARGO_NAME,
     OS_INFO,
 };
+use crate::platform::Platform;
 use lazy_static::lazy_static;
 use os_info::Type;
 use std::path::PathBuf;
