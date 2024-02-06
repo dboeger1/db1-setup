@@ -6,6 +6,7 @@ use crate::{
         DIR_PROJECT_PACKAGES,
         DIR_PROJECT_ROOT,
         DIR_PROJECT_TARGET,
+        FILE_GITIGNORE,
         FILE_TAR,
         NAME_VERSION,
     },
@@ -34,6 +35,13 @@ pub(crate) fn archive_sources_tar() -> Result<(), Error> {
         format!(
             "--directory={}",
             DIR_PROJECT_ROOT.to_string_lossy(),
+        ),
+        format!(
+            "--exclude={}",
+            FILE_GITIGNORE
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
         ),
         format!(
             "--exclude={}",

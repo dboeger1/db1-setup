@@ -33,6 +33,9 @@ lazy_static! {
         .unwrap()
         .to_path_buf();
 
+    pub(crate) static ref FILE_GITIGNORE: PathBuf =
+        DIR_PROJECT_ROOT.join(".gitignore");
+
     pub(crate) static ref DIR_PROJECT_GIT: PathBuf =
         DIR_PROJECT_ROOT.join(".git");
     pub(crate) static ref DIR_PROJECT_TARGET: PathBuf =
