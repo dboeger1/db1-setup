@@ -8,7 +8,6 @@ use crate::{
             },
             INSTALL_DIR,
             rust::rustup_init,
-            ssh::configure_ssh,
         },
         Platform,
     },
@@ -32,9 +31,6 @@ lazy_static! {
         // Neovim
         neovim_destination: Some(HOME_DIR.join(".config/nvim")),
         neovim_source: Some(INSTALL_DIR.join("neovim")),
-
-        // SSH
-        configure_ssh: configure_ssh,
 
         // tmux
         tmux_destination: Some(HOME_DIR.join(".tmux.conf")),

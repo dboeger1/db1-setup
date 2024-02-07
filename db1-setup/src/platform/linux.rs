@@ -1,7 +1,6 @@
 mod dnf;
 mod fedora;
 mod rust;
-mod ssh;
 
 
 use crate::{

@@ -18,7 +18,7 @@ pub struct Args {
 }
 
 
-pub(crate) fn subcommand_neovim(
+pub(crate) fn subcommand_utilities(
     platform: &Platform,
     args: &Args,
 ) -> Result<(), Error> {

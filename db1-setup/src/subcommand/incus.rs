@@ -1,11 +1,26 @@
+mod subcommand;
+
+
 use crate::{
     error::Error,
     platform::Platform,
 };
+use subcommand::{
+    execute_subcommand,
+    Subcommand,
+};
 
 
-pub(crate) fn subcommand_incus(_platform: &Platform) -> Result<(), Error> {
-    println!("<< SUBCOMMAND: INCUS >>");
+#[derive(clap::Args, PartialEq, Eq)]
+pub struct Args {
+    #[command(subcommand)]
+    pub(crate) subcommand: Subcommand,
+}
 
-    Ok(())
+
+pub(crate) fn subcommand_incus(
+    platform: &Platform,
+    args: &Args,
+) -> Result<(), Error> {
+    execute_subcommand(platform, &args.subcommand)
 }

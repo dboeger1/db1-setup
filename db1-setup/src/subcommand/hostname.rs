@@ -1,11 +1,26 @@
+mod subcommand;
+
+
 use crate::{
     error::Error,
     platform::Platform,
 };
+use subcommand::{
+    execute_subcommand,
+    Subcommand,
+};
 
 
-pub(crate) fn subcommand_hostname(_platform: &Platform) -> Result<(), Error> {
-    println!("<< SUBCOMMAND: HOSTNAME >>");
-    
-    Ok(())
+#[derive(clap::Args, PartialEq, Eq)]
+pub struct Args {
+    #[command(subcommand)]
+    pub(crate) subcommand: Subcommand,
+}
+
+
+pub(crate) fn subcommand_hostname(
+    platform: &Platform,
+    args: &Args,
+) -> Result<(), Error> {
+    execute_subcommand(platform, &args.subcommand)
 }

@@ -1,22 +1,26 @@
+mod subcommand;
+
+
 use crate::{
     error::Error,
     platform::Platform,
+};
+use subcommand::{
+    execute_subcommand,
+    Subcommand,
 };
 
 
 #[derive(clap::Args, PartialEq, Eq)]
 pub struct Args {
-    #[arg(short, long)]
-    pub comment: Option<String>,
-
-    #[arg(short, long)]
-    pub force: bool,
+    #[command(subcommand)]
+    pub(crate) subcommand: Subcommand,
 }
 
 
 pub(crate) fn subcommand_ssh(
     platform: &Platform,
-    _args: &Args,
+    args: &Args,
 ) -> Result<(), Error> {
-    (platform.configure_ssh)()
+    execute_subcommand(platform, &args.subcommand)
 }
