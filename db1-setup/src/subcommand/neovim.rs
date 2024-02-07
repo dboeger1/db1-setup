@@ -6,18 +6,30 @@ use fs_extra::dir::{
     copy,
     CopyOptions,
 };
-use std::fs::{
-    create_dir_all,
-    metadata,
-    remove_dir_all,
-    remove_file,
+use std::{
+    fs::{
+        create_dir_all,
+        metadata,
+        remove_dir_all,
+        remove_file,
+    },
+    path::{
+        Path,
+        PathBuf,
+    },
 };
 
 
 #[derive(clap::Args, PartialEq, Eq)]
 pub struct Args {
     #[arg(short, long)]
+    pub destination: Option<PathBuf>,
+
+    #[arg(short, long)]
     pub force: bool,
+
+    #[arg(short, long)]
+    pub source: Option<PathBuf>,
 }
 
 
@@ -25,47 +37,94 @@ pub(crate) fn subcommand_neovim(
     platform: &Platform,
     args: &Args,
 ) -> Result<(), Error> {
-    let paths = &platform.neovim_paths;
+    // Determine source path.
+    let path_source: &Path;
+    if let Some(path_source_arg) = args.source.as_ref() {
+        path_source = path_source_arg.as_path();
+    } else if let Some(path_source_platform) = platform.neovim_source.as_ref() {
+        path_source = path_source_platform.as_path();
+        println!(
+            "Using default source path: {}",
+            path_source.to_string_lossy(),
+        );
+    } else {
+        return Err(Error {
+            message: "--source required on platform with no default"
+                .to_string(),
+            source: None,
+        });
+    }
 
-    println!("Copying Neovim configuration...");
-    println!(
-        "\tSource: {}",
-        paths.source.to_string_lossy(),
-    );
-    println!(
-        "\tDestination: {}",
-        paths.destination.to_string_lossy(),
-    );
+    // Determine destination path.
+    let path_destination: &Path;
+    if let Some(path_destination_arg) = args.destination.as_ref() {
+        path_destination = path_destination_arg.as_path();
+    } else if let Some(path_destination_platform) =
+        platform.neovim_destination.as_ref() {
+        path_destination = path_destination_platform.as_path();
+        println!(
+            "Using default destination path: {}",
+            path_destination.to_string_lossy(),
+        );
+    } else {
+        return Err(Error {
+            message: "--destination required on platform with no default"
+                .to_string(),
+            source: None,
+        });
+    }
 
-    // Validate source.
-    if !paths.source.exists() {
+    // Check if source and destination are the same.
+    if path_source == path_destination {
         return Err(Error {
             message: format!(
-                "Missing directory: {}",
-                paths.source.to_string_lossy(),
+                "Source and destination are the same: {}",
+                path_source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
-    if !paths.source.is_dir() {
+    // Indicate operation.
+    println!("Copying Neovim configuration...");
+    println!(
+        "\tSource: {}",
+        path_source.to_string_lossy(),
+    );
+    println!(
+        "\tDestination: {}",
+        path_destination.to_string_lossy(),
+    );
+
+    // Validate source.
+    if !path_source.exists() {
+        return Err(Error {
+            message: format!(
+                "Missing directory: {}",
+                path_source.to_string_lossy(),
+            ),
+            source: None,
+        });
+    }
+
+    if !path_source.is_dir() {
         return Err(Error {
             message: format!(
                 "Not a directory: {}",
-                paths.source.to_string_lossy(),
+                path_source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
     // Validate destination.
-    if paths.destination.is_symlink() {
+    if path_destination.is_symlink() {
         match args.force {
-            true => if let Err(error) = remove_file(&paths.destination) {
+            true => if let Err(error) = remove_file(&path_destination) {
                 return Err(Error {
                     message: format!(
                         "Failed to overwrite symlink: {}",
-                        paths.destination.to_string_lossy(),
+                        path_destination.to_string_lossy(),
                     ),
                     source: Some(Box::new(error)),
                 });
@@ -73,20 +132,20 @@ pub(crate) fn subcommand_neovim(
             false => return Err(Error {
                 message: format!(
                     "Cannot overwrite symlink: {}",
-                    paths.destination.to_string_lossy(),
+                    path_destination.to_string_lossy(),
                 ),
                 source: None,
             }),
         }
     }
 
-    if paths.destination.is_file() {
+    if path_destination.is_file() {
         match args.force {
-            true => if let Err(error) = remove_file(&paths.destination) {
+            true => if let Err(error) = remove_file(&path_destination) {
                 return Err(Error {
                     message: format!(
                         "Failed to overwrite file: {}",
-                        paths.destination.to_string_lossy(),
+                        path_destination.to_string_lossy(),
                     ),
                     source: Some(Box::new(error)),
                 });
@@ -94,20 +153,20 @@ pub(crate) fn subcommand_neovim(
             false => return Err(Error {
                 message: format!(
                     "Cannot overwrite file: {}",
-                    paths.destination.to_string_lossy(),
+                    path_destination.to_string_lossy(),
                 ),
                 source: None,
             }),
         }
     }
 
-    if paths.destination.is_dir() {
+    if path_destination.is_dir() {
         match args.force {
-            true => if let Err(error) = remove_dir_all(&paths.destination) {
+            true => if let Err(error) = remove_dir_all(&path_destination) {
                 return Err(Error {
                     message: format!(
                         "Failed to overwrite directory: {}",
-                        paths.destination.to_string_lossy(),
+                        path_destination.to_string_lossy(),
                     ),
                     source: Some(Box::new(error)),
                 });
@@ -115,7 +174,7 @@ pub(crate) fn subcommand_neovim(
             false => return Err(Error {
                 message: format!(
                     "Cannot overwrite directory: {}",
-                    paths.destination.to_string_lossy(),
+                    path_destination.to_string_lossy(),
                 ),
                 source: None,
             }),
@@ -124,30 +183,30 @@ pub(crate) fn subcommand_neovim(
 
     // We should have either returned an error or deleted the existing file by
     // now. Maybe this should panic?
-    if metadata(&paths.destination).is_ok() {
+    if metadata(&path_destination).is_ok() {
         return Err(Error {
             message: format!(
                 "Cannot overwrite destination: {}",
-                paths.destination.to_string_lossy(),
+                path_destination.to_string_lossy(),
             ),
             source: None,
         });
     }
 
     // Create destination.
-    create_dir_all(paths.destination.as_path())
+    create_dir_all(path_destination)
         .map_err(|error| Error {
             message: format!(
                 "Failed to create directory: {}",
-                paths.destination.to_string_lossy(),
+                path_destination.to_string_lossy(),
             ),
             source: Some(Box::new(error)),
         })?;
 
     // Copy contents from source to destination.
     copy(
-        paths.source.as_path(),
-        paths.destination.as_path(),
+        path_source,
+        path_destination,
         &CopyOptions {
             content_only: true,
             ..Default::default()
@@ -157,8 +216,8 @@ pub(crate) fn subcommand_neovim(
             |error| Err(Error {
                 message: format!(
                     "Failed to copy directory contents: {} -> {}",
-                    paths.source.to_string_lossy(),
-                    paths.destination.to_string_lossy(),
+                    path_source.to_string_lossy(),
+                    path_destination.to_string_lossy(),
                 ),
                 source: Some(Box::new(error)),
             }),

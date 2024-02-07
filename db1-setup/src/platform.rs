@@ -2,19 +2,27 @@
 mod linux;
 
 
-use crate::{
-    error::Error,
-    source_destination::SourceDestination,
-};
+use crate::error::Error;
+use std::path::PathBuf;
 
 #[cfg(target_os = "linux")]
 pub(crate) use linux::PLATFORM;
 
 
 pub(crate) struct Platform {
-    pub(crate) configure_ssh: fn() -> Result<(), Error>,
+    // Install
     pub(crate) install_packages: fn() -> Result<(), Error>,
-    pub(crate) neovim_paths: SourceDestination,
+
+    // Neovim
+    pub(crate) neovim_destination: Option<PathBuf>,
+    pub(crate) neovim_source: Option<PathBuf>,
+
+    // SSH
+    pub(crate) configure_ssh: fn() -> Result<(), Error>,
+
+    // tmux
     #[cfg(not(target_os = "windows"))]
-    pub(crate) tmux_paths: SourceDestination,
+    pub(crate) tmux_destination: Option<PathBuf>,
+    #[cfg(not(target_os = "windows"))]
+    pub(crate) tmux_source: Option<PathBuf>,
 }

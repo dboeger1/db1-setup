@@ -12,7 +12,6 @@ use crate::{
         },
         Platform,
     },
-    source_destination::SourceDestination,
 };
 use lazy_static::lazy_static;
 
@@ -20,7 +19,7 @@ use lazy_static::lazy_static;
 lazy_static! {
     // Platform data.
     pub(crate) static ref PLATFORM: Platform = Platform {
-        configure_ssh: configure_ssh,
+        // Install
         install_packages: || {
             install(["dnf-command(copr)"])?;
             copr_enable("ganto/lxc4")?;
@@ -29,14 +28,17 @@ lazy_static! {
 
             Ok(())
         },
-        neovim_paths: SourceDestination {
-                source: INSTALL_DIR.join("neovim"),
-                destination: HOME_DIR.join(".config/nvim"),
-            },
-        tmux_paths: SourceDestination {
-                source: INSTALL_DIR.join("tmux/.tmux.conf"),
-                destination: HOME_DIR.join(".tmux.conf"),
-            },
+
+        // Neovim
+        neovim_destination: Some(HOME_DIR.join(".config/nvim")),
+        neovim_source: Some(INSTALL_DIR.join("neovim")),
+
+        // SSH
+        configure_ssh: configure_ssh,
+
+        // tmux
+        tmux_destination: Some(HOME_DIR.join(".tmux.conf")),
+        tmux_source: Some(INSTALL_DIR.join("tmux/.tmux.conf")),
     };
 
     // Packages to install.
