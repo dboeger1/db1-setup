@@ -1,6 +1,9 @@
 use crate::error::Error;
 use prun::prun;
-use std::process::Command;
+use std::process::{
+    Command,
+    Output,
+};
 
 
 pub(crate) fn copr_enable(copr: &str) -> Result<(), Error> {
@@ -12,11 +15,23 @@ pub(crate) fn copr_enable(copr: &str) -> Result<(), Error> {
         copr,
     ]);
 
-    prun(&mut dnf_command, false)
-        .map_err(|error| Error {
+    let output: Output;
+    match prun(&mut dnf_command, false) {
+        Ok(output_inner) => output = output_inner,
+        Err(error) => return Err(Error {
             message: "Error running dnf command.".to_string(),
             source: Some(Box::new(error)),
-        })
+        }),
+    };
+
+    if !output.status.success() {
+        return Err(Error {
+            message: "dnf command failed.".to_string(),
+            source: None,
+        });
+    }
+
+    Ok(())
 }
 
 pub(crate) fn install<I>(packages: I) -> Result<(), Error>
@@ -33,11 +48,23 @@ where
         dnf_command.arg(package.as_ref());
     }
 
-    prun(&mut dnf_command, false)
-        .map_err(|error| Error {
+    let output: Output;
+    match prun(&mut dnf_command, false) {
+        Ok(output_inner) => output = output_inner,
+        Err(error) => return Err(Error {
             message: "Error running dnf command.".to_string(),
             source: Some(Box::new(error)),
-        })
+        }),
+    };
+
+    if !output.status.success() {
+        return Err(Error {
+            message: "dnf command failed.".to_string(),
+            source: None,
+        });
+    }
+
+    Ok(())
 }
 
 //pub(crate) fn is_installed(package: &str) -> Result<bool, Error> {

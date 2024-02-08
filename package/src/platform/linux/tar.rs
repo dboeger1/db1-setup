@@ -14,7 +14,10 @@ use crate::{
 use prun::prun;
 use std::{
     fs::create_dir_all,
-    process::Command,
+    process::{
+        Command,
+        Output,
+    },
 };
 
 
@@ -72,9 +75,21 @@ pub(crate) fn archive_sources_tar() -> Result<(), Error> {
         ".".to_string(),
     ]);
 
-    prun(&mut tar_command, false)
-        .map_err(|error| Error {
+    let output: Output;
+    match prun(&mut tar_command, false) {
+        Ok(output_inner) => output = output_inner,
+        Err(error) => return Err(Error {
             message: "Error running tar command.".to_string(),
             source: Some(Box::new(error)),
-        })
+        }),
+    }
+
+    if !output.status.success() {
+        return Err(Error {
+            message: "tar command failed.".to_string(),
+            source: None,
+        });
+    };
+
+    Ok(())
 }

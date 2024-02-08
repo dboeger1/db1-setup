@@ -15,7 +15,10 @@ use std::{
         create_dir_all,
     },
     path::PathBuf,
-    process::Command,
+    process::{
+        Command,
+        Output,
+    },
 };
 
 
@@ -108,9 +111,21 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
         FILE_SPEC_COPY.to_string_lossy().to_string(),
     ]);
 
-    prun(&mut rpmbuild_command, false)
-        .map_err(|error| Error {
+    let output: Output;
+    match prun(&mut rpmbuild_command, false) {
+        Ok(output_inner) => output = output_inner,
+        Err(error) => return Err(Error {
             message: "Error running rpmbuild command.".to_string(),
             source: Some(Box::new(error)),
-        })
+        }),
+    }
+
+    if !output.status.success() {
+        return Err(Error {
+            message: "rpmbuild command failed.".to_string(),
+            source: None,
+        });
+    };
+
+    Ok(())
 }
