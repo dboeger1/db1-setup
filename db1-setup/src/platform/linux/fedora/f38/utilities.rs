@@ -1,5 +1,5 @@
-pub(crate) mod install;
-pub(crate) mod verify;
+mod install;
+mod verify;
 
 
 use crate::platform::utilities::Platform;
@@ -9,7 +9,7 @@ use verify::verify;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Platform = Platform {
+    pub(super) static ref PLATFORM: Platform = Platform {
         install,
         verify,
     };

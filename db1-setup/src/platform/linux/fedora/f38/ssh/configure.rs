@@ -4,7 +4,7 @@ use crate::{
 };
 
 
-pub(crate) fn configure(_args: &Args) -> Result<(), Error> {
+pub(super) fn configure(_args: &Args) -> Result<(), Error> {
     println!("<< F38 SSH CONFIGURE >>");
 
     Ok(())

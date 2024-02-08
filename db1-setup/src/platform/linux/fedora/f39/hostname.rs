@@ -1,5 +1,5 @@
-pub(crate) mod configure;
-pub(crate) mod verify;
+mod configure;
+mod verify;
 
 
 use configure::configure;
@@ -9,7 +9,7 @@ use verify::verify;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Platform = Platform {
+    pub(super) static ref PLATFORM: Platform = Platform {
         configure,
         verify,
     };

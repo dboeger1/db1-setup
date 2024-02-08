@@ -1,5 +1,5 @@
-pub(crate) mod install;
-pub(crate) mod verify;
+mod install;
+mod verify;
 
 
 use crate::{
@@ -15,7 +15,7 @@ use verify::verify;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Platform = Platform {
+    pub(super) static ref PLATFORM: Platform = Platform {
         destination: Some(HOME_DIR.join(".tmux.conf")),
         source: Some(INSTALL_DIR.join("tmux/.tmux.conf")),
         install,

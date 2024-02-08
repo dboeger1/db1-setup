@@ -1,7 +1,7 @@
 use crate::error::Error;
 
 
-pub(crate) fn install() -> Result<(), Error> {
+pub(super) fn install() -> Result<(), Error> {
     println!("<< F38 NEOVIM INSTALL >>");
 
     Ok(())
