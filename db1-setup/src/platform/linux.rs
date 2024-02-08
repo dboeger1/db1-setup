@@ -15,9 +15,9 @@ use std::path::PathBuf;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Option<&'static Platform> =
+    pub(super) static ref PLATFORM: Option<Platform> =
         match OS_INFO.os_type() {
-            Type::Fedora => *fedora::PLATFORM,
+            Type::Fedora => fedora::PLATFORM.clone(),
             _ => None,
         };
 

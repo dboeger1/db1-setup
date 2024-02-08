@@ -1,6 +1,6 @@
 use crate::{
     error::Error,
-    subcommand::ssh::subcommand::configure::Args,
+    ssh::configure::Args,
 };
 
 

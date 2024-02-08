@@ -16,7 +16,7 @@ use lazy_static::lazy_static;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Platform = Platform {
+    pub(super) static ref PLATFORM: Platform = Platform {
         c: c::PLATFORM.clone(),
         cpp: cpp::PLATFORM.clone(),
         hostname: hostname::PLATFORM.clone(),

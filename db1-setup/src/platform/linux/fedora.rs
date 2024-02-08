@@ -11,10 +11,10 @@ use os_info::Version;
 
 
 lazy_static! {
-    pub(crate) static ref PLATFORM: Option<&'static Platform> =
+    pub(super) static ref PLATFORM: Option<Platform> =
         match OS_INFO.version() {
-            Version::Semantic(38, 0, 0) => Some(&f38::PLATFORM),
-            Version::Semantic(39, 0, 0) => Some(&f39::PLATFORM),
+            Version::Semantic(38, 0, 0) => Some(f38::PLATFORM.clone()),
+            Version::Semantic(39, 0, 0) => Some(f39::PLATFORM.clone()),
             _ => None,
         };
 }

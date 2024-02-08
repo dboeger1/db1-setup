@@ -1,6 +1,6 @@
 use crate::{
     error::Error,
-    subcommand::hostname::subcommand::configure::Args,
+    hostname::configure::Args,
 };
 
 
