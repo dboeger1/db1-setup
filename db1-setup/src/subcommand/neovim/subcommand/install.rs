@@ -3,8 +3,6 @@ use crate::{
     platform::Platform,
 };
 
-pub(crate) fn subcommand_install(_platform: &Platform) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: NEOVIM INSTALL ===");
-
-    Ok(())
+pub(crate) fn subcommand_install(platform: &Platform) -> Result<(), Error> {
+    (platform.neovim_install)()
 }

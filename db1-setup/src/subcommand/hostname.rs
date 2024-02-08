@@ -1,4 +1,4 @@
-mod subcommand;
+pub(crate) mod subcommand;
 
 
 use crate::{

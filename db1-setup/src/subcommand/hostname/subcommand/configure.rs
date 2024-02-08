@@ -4,8 +4,16 @@ use crate::{
 };
 
 
-pub(crate) fn subcommand_configure(_platform: &Platform) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: HOSTNAME CONFIGURE ===");
+#[derive(clap::Args, PartialEq, Eq)]
+pub struct Args {
+    #[arg(short, long)]
+    pub force: bool,
+}
 
-    Ok(())
+
+pub(crate) fn subcommand_configure(
+    platform: &Platform,
+    args: &Args,
+) -> Result<(), Error> {
+    (platform.hostname_configure)(args)
 }

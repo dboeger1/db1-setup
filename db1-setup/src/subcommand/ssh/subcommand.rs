@@ -1,4 +1,4 @@
-mod configure;
+pub(crate) mod configure;
 mod verify;
 
 

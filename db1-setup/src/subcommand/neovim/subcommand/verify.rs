@@ -3,8 +3,6 @@ use crate::{
     platform::Platform,
 };
 
-pub(crate) fn subcommand_verify(_platform: &Platform) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: NEOVIM VERIFY ===");
-
-    Ok(())
+pub(crate) fn subcommand_verify(platform: &Platform) -> Result<(), Error> {
+    (platform.neovim_verify)()
 }

@@ -1,6 +1,6 @@
 mod c;
 mod cpp;
-mod hostname;
+pub(crate) mod hostname;
 mod incus;
 mod javascript;
 pub(crate) mod neovim;
@@ -39,20 +39,28 @@ use tmux::subcommand_tmux;
 #[derive(clap::Subcommand, PartialEq, Eq)]
 pub enum Subcommand {
     C(c::Args),
+
     Cpp(cpp::Args),
+
     Hostname(hostname::Args),
+
     Incus(incus::Args),
+
     Javascript(javascript::Args),
+
     Neovim(neovim::Args),
-    Rust(rust::Args),
-    Ssh(ssh::Args),
-    Utilities(utilities::Args),
 
     #[cfg(target_os = "linux")]
     Rpm(rpm::Args),
 
+    Rust(rust::Args),
+
+    Ssh(ssh::Args),
+
     #[cfg(not(target_os = "windows"))]
     Tmux(tmux::Args),
+
+    Utilities(utilities::Args),
 }
 
 

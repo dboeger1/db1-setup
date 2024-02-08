@@ -4,8 +4,6 @@ use crate::{
 };
 
 
-pub(crate) fn subcommand_verify(_platform: &Platform) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: C VERIFY ===");
-
-    Ok(())
+pub(crate) fn subcommand_verify(platform: &Platform) -> Result<(), Error> {
+    (platform.c_verify)()
 }

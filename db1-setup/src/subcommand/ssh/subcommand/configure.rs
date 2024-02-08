@@ -15,10 +15,8 @@ pub struct Args {
 
 
 pub(crate) fn subcommand_configure(
-    _platform: &Platform,
-    _args: &Args,
+    platform: &Platform,
+    args: &Args,
 ) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: SSH CONFIGURE ===");
-
-    Ok(())
+    (platform.ssh_configure)(args)
 }

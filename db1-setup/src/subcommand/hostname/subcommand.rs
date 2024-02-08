@@ -1,4 +1,4 @@
-mod configure;
+pub(crate) mod configure;
 mod verify;
 
 
@@ -12,7 +12,7 @@ use verify::subcommand_verify;
 
 #[derive(clap::Subcommand, PartialEq, Eq)]
 pub(crate) enum Subcommand {
-    Configure,
+    Configure(configure::Args),
     Verify,
 }
 
@@ -22,7 +22,7 @@ pub(crate) fn execute_subcommand(
     args_subcommand: &Subcommand,
 ) -> Result<(), Error> {
     match args_subcommand {
-        Subcommand::Configure => subcommand_configure(platform),
+        Subcommand::Configure(args) => subcommand_configure(platform, &args),
         Subcommand::Verify => subcommand_verify(platform),
     }
 }

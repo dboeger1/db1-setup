@@ -4,8 +4,6 @@ use crate::{
 };
 
 
-pub(crate) fn subcommand_install(_platform: &Platform) -> Result<(), Error> {
-    println!("=== SUBCOMMAND: RUST INSTALL ===");
-
-    Ok(())
+pub(crate) fn subcommand_install(platform: &Platform) -> Result<(), Error> {
+    (platform.rust_install)()
 }
