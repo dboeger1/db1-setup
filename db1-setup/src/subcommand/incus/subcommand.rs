@@ -19,9 +19,9 @@ pub(crate) enum Subcommand {
 
 pub(crate) fn execute_subcommand(
     platform: &Platform,
-    args_subcommand: &Subcommand,
+    subcommand: &Subcommand,
 ) -> Result<(), Error> {
-    match args_subcommand {
+    match subcommand {
         Subcommand::Install => subcommand_install(platform),
         Subcommand::Verify => subcommand_verify(platform),
     }

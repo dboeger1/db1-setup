@@ -66,9 +66,9 @@ pub enum Subcommand {
 
 pub(crate) fn execute_subcommand(
     platform: &Platform,
-    args_subcommand: &Subcommand,
+    subcommand: &Subcommand,
 ) -> Result<(), Error> {
-    match args_subcommand {
+    match subcommand {
         Subcommand::C(args) => subcommand_c(platform, &args),
         Subcommand::Cpp(args) => subcommand_cpp(platform, &args),
         Subcommand::Hostname(args) => subcommand_hostname(platform, &args),
