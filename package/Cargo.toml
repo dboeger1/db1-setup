@@ -11,4 +11,4 @@ db1-setup = { path = "../db1-setup" }
 const_format = "0.2.32"
 lazy_static = "1.4.0"
 os_info = "3.7.0"
-print-command-rs = { git = "https://github.com/dboeger1/print-command.git" }
+prun-rs = { git = "https://github.com/dboeger1/prun.git" }

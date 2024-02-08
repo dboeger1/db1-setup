@@ -124,7 +124,7 @@ dependencies = [
  "fs_extra",
  "lazy_static",
  "os_info",
- "print-command-rs",
+ "prun-rs",
 ]
 
 [[package]]
@@ -171,13 +171,8 @@ dependencies = [
  "db1-setup",
  "lazy_static",
  "os_info",
- "print-command-rs",
+ "prun-rs",
 ]
-
-[[package]]
-name = "print-command-rs"
-version = "0.1.0"
-source = "git+https://github.com/dboeger1/print-command.git#58bed021dc62048b0b958164c69058fc98f2fe08"
 
 [[package]]
 name = "proc-macro2"
@@ -187,6 +182,11 @@ checksum = "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
 dependencies = [
  "unicode-ident",
 ]
+
+[[package]]
+name = "prun-rs"
+version = "0.1.0"
+source = "git+https://github.com/dboeger1/prun.git#3c7421e47c9df7ac362c1a70cd925e6b92f60061"
 
 [[package]]
 name = "quote"

@@ -8,7 +8,7 @@ use crate::{
 };
 use db1_setup::CARGO_NAME;
 use lazy_static::lazy_static;
-use print_command::run_and_print;
+use prun::prun;
 use std::{
     fs::{
         copy,
@@ -108,7 +108,7 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
         FILE_SPEC_COPY.to_string_lossy().to_string(),
     ]);
 
-    run_and_print(&mut rpmbuild_command, false)
+    prun(&mut rpmbuild_command, false)
         .map_err(|error| Error {
             message: "Error running rpmbuild command.".to_string(),
             source: Some(Box::new(error)),

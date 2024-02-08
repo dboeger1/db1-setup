@@ -1,5 +1,5 @@
 use crate::error::Error;
-use print_command::run_and_print;
+use prun::prun;
 use std::process::Command;
 
 
@@ -12,7 +12,7 @@ pub(crate) fn copr_enable(copr: &str) -> Result<(), Error> {
         copr,
     ]);
 
-    run_and_print(&mut dnf_command, false)
+    prun(&mut dnf_command, false)
         .map_err(|error| Error {
             message: "Error running dnf command.".to_string(),
             source: Some(Box::new(error)),
@@ -33,9 +33,24 @@ where
         dnf_command.arg(package.as_ref());
     }
 
-    run_and_print(&mut dnf_command, false)
+    prun(&mut dnf_command, false)
         .map_err(|error| Error {
             message: "Error running dnf command.".to_string(),
             source: Some(Box::new(error)),
         })
 }
+
+//pub(crate) fn is_installed(package: &str) -> Result<bool, Error> {
+//    let mut dnf_command = Command::new("dnf");
+//    dnf_command.args([
+//        "info",
+//        "--installed",
+//        package,
+//    ]);
+//
+//    prun(&mut dnf_command, false)
+//        .map_err(|error| Error {
+//            message: "Error running dnf command.".to_string(),
+//            source: Some(Box::new(error)),
+//        })?;
+//}
