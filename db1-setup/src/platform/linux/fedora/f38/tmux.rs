@@ -1,16 +1,27 @@
-use crate::error::Error;
+pub(crate) mod install;
+pub(crate) mod verify;
 
 
-pub(crate) fn install() -> Result<(), Error> {
-    println!("<< F38 TMUX INSTALL >>");
+use crate::{
+    HOME_DIR,
+    platform::{
+        linux::INSTALL_DIR,
+        tmux::Platform,
+    },
+};
+use lazy_static::lazy_static;
+use install::install;
+use verify::verify;
 
-    Ok(())
+
+lazy_static! {
+    pub(crate) static ref PLATFORM: Platform = Platform {
+        destination: Some(HOME_DIR.join(".tmux.conf")),
+        source: Some(INSTALL_DIR.join("tmux/.tmux.conf")),
+        install,
+        verify,
+    };
 }
 
-pub(crate) fn verify() -> Result<(), Error> {
-    println!("<< F38 TMUX VERIFY >>");
-
-    Ok(())
-}
 
 //tmux

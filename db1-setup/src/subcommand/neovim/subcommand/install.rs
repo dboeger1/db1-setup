@@ -4,5 +4,5 @@ use crate::{
 };
 
 pub(crate) fn subcommand_install(platform: &Platform) -> Result<(), Error> {
-    (platform.neovim_install)()
+    (platform.neovim.install)()
 }

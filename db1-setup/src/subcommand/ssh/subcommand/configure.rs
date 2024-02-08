@@ -18,5 +18,5 @@ pub(crate) fn subcommand_configure(
     platform: &Platform,
     args: &Args,
 ) -> Result<(), Error> {
-    (platform.ssh_configure)(args)
+    (platform.ssh.configure)(args)
 }

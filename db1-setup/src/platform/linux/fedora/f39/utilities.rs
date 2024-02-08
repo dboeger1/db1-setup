@@ -1,17 +1,20 @@
-use crate::error::Error;
+pub(crate) mod install;
+pub(crate) mod verify;
 
 
-pub(crate) fn install() -> Result<(), Error> {
-    println!("<< F39 UTILITIES INSTALL >>");
+use crate::platform::utilities::Platform;
+use lazy_static::lazy_static;
+use install::install;
+use verify::verify;
 
-    Ok(())
+
+lazy_static! {
+    pub(crate) static ref PLATFORM: Platform = Platform {
+        install,
+        verify,
+    };
 }
 
-pub(crate) fn verify() -> Result<(), Error> {
-    println!("<< F39 UTILITIES VERIFY >>");
-
-    Ok(())
-}
 
 //fd-find
 //git

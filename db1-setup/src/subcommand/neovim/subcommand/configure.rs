@@ -41,7 +41,7 @@ pub(crate) fn subcommand_configure(
     let path_source: &Path;
     if let Some(path_source_arg) = args.source.as_ref() {
         path_source = path_source_arg.as_path();
-    } else if let Some(path_source_platform) = platform.neovim_source.as_ref() {
+    } else if let Some(path_source_platform) = platform.neovim.source.as_ref() {
         path_source = path_source_platform.as_path();
         println!(
             "Using default source path: {}",
@@ -60,7 +60,7 @@ pub(crate) fn subcommand_configure(
     if let Some(path_destination_arg) = args.destination.as_ref() {
         path_destination = path_destination_arg.as_path();
     } else if let Some(path_destination_platform) =
-        platform.neovim_destination.as_ref() {
+        platform.neovim.destination.as_ref() {
         path_destination = path_destination_platform.as_path();
         println!(
             "Using default destination path: {}",

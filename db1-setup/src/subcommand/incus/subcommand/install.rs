@@ -5,5 +5,5 @@ use crate::{
 
 
 pub(crate) fn subcommand_install(platform: &Platform) -> Result<(), Error> {
-    (platform.incus_install)()
+    (platform.incus.install)()
 }

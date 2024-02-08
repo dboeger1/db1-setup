@@ -15,5 +15,5 @@ pub(crate) fn subcommand_configure(
     platform: &Platform,
     args: &Args,
 ) -> Result<(), Error> {
-    (platform.hostname_configure)(args)
+    (platform.hostname.configure)(args)
 }

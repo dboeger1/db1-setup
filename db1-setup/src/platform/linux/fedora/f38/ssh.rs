@@ -1,17 +1,16 @@
-use crate::{
-    error::Error,
-    subcommand::ssh::subcommand::configure::Args,
-};
+pub(crate) mod configure;
+pub(crate) mod verify;
 
 
-pub(crate) fn configure(_args: &Args) -> Result<(), Error> {
-    println!("<< F38 SSH CONFIGURE >>");
+use configure::configure;
+use crate::platform::ssh::Platform;
+use lazy_static::lazy_static;
+use verify::verify;
 
-    Ok(())
-}
 
-pub(crate) fn verify() -> Result<(), Error> {
-    println!("<< F38 SSH VERIFY >>");
-
-    Ok(())
+lazy_static! {
+    pub(crate) static ref PLATFORM: Platform = Platform {
+        configure,
+        verify,
+    };
 }

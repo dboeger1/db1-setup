@@ -5,5 +5,5 @@ use crate::{
 
 
 pub(crate) fn subcommand_verify(platform: &Platform) -> Result<(), Error> {
-    (platform.javascript_verify)()
+    (platform.javascript.verify)()
 }

@@ -4,5 +4,5 @@ use crate::{
 };
 
 pub(crate) fn subcommand_verify(platform: &Platform) -> Result<(), Error> {
-    (platform.neovim_verify)()
+    (platform.neovim.verify)()
 }

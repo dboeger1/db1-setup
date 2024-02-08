@@ -5,5 +5,5 @@ use crate::{
 
 
 pub(crate) fn subcommand_verify(platform: &Platform) -> Result<(), Error> {
-    (platform.incus_verify)()
+    (platform.incus.verify)()
 }
