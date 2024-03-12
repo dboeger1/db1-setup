@@ -1,26 +1,34 @@
+mod configure;
 mod install;
 mod verify;
 
 
-use crate::{
-    HOME_DIR,
-    platform::{
-        linux::INSTALL_DIR,
-        tmux::Platform,
-    },
-};
-use lazy_static::lazy_static;
+use clap::Parser;
+use crate::Error;
+use configure::configure;
 use install::install;
 use verify::verify;
 
 
-lazy_static! {
-    pub(super) static ref PLATFORM: Platform = Platform {
-        destination: Some(HOME_DIR.join(".tmux.conf")),
-        source: Some(INSTALL_DIR.join("tmux/.tmux.conf")),
-        install,
-        verify,
-    };
+pub(super) fn execute(args: Args) -> Result<(), Error> {
+    match args.subcommand {
+        Subcommand::Configure(args) => configure(&args),
+        Subcommand::Install => install(),
+        Subcommand::Verify => verify(),
+    }
+}
+
+#[derive(Parser, PartialEq, Eq)]
+pub struct Args {
+    #[command(subcommand)]
+    pub subcommand: Subcommand,
+}
+
+#[derive(clap::Subcommand, PartialEq, Eq)]
+pub enum Subcommand {
+    Configure(configure::Args),
+    Install,
+    Verify,
 }
 
 

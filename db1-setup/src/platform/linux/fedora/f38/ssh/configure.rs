@@ -1,10 +1,7 @@
-use crate::{
-    error::Error,
-    ssh::configure::Args,
-};
+use crate::Error;
 
 
-pub(super) fn configure(_args: &Args) -> Result<(), Error> {
+pub(super) fn configure() -> Result<(), Error> {
     println!("<< F38 SSH CONFIGURE >>");
 
     Ok(())

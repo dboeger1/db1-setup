@@ -1,10 +1,11 @@
-use crate::{
-    error::Error,
-    platform::tmux::Platform,
+use crate::Error;
+use fs_extra::dir::{
+    copy,
+    CopyOptions,
 };
 use std::{
     fs::{
-        copy,
+        create_dir_all,
         metadata,
         remove_dir_all,
         remove_file,
@@ -29,17 +30,12 @@ pub struct Args {
 }
 
 
-pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
+pub(super) fn configure(args: &Args) -> Result<(), Error> {
     // Determine source path.
     let path_source: &Path;
     if let Some(path_source_arg) = args.source.as_ref() {
         path_source = path_source_arg.as_path();
-    } else if let Some(path_source_platform) = platform.source.as_ref() {
-        path_source = path_source_platform.as_path();
-        println!(
-            "Using default source path: {}",
-            path_source.to_string_lossy(),
-        );
+    // TODO: Consider default source path for unrecognized platforms.
     } else {
         return Err(Error {
             message: "--source required on platform with no default"
@@ -52,13 +48,7 @@ pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
     let path_destination: &Path;
     if let Some(path_destination_arg) = args.destination.as_ref() {
         path_destination = path_destination_arg.as_path();
-    } else if let Some(path_destination_platform) =
-        platform.destination.as_ref() {
-        path_destination = path_destination_platform.as_path();
-        println!(
-            "Using default destination path: {}",
-            path_destination.to_string_lossy(),
-        );
+    // TODO: Consider default destination path for unrecognized platforms.
     } else {
         return Err(Error {
             message: "--destination required on platform with no default"
@@ -79,7 +69,7 @@ pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
     }
 
     // Indicate operation.
-    println!("Copying tmux configuration...");
+    println!("Copying Neovim configuration...");
     println!(
         "\tSource: {}",
         path_source.to_string_lossy(),
@@ -93,17 +83,17 @@ pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
     if !path_source.exists() {
         return Err(Error {
             message: format!(
-                "Missing file: {}",
+                "Missing directory: {}",
                 path_source.to_string_lossy(),
             ),
             source: None,
         });
     }
 
-    if !path_source.is_file() {
+    if !path_source.is_dir() {
         return Err(Error {
             message: format!(
-                "Not a regular file: {}",
+                "Not a directory: {}",
                 path_source.to_string_lossy(),
             ),
             source: None,
@@ -186,12 +176,29 @@ pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
         });
     }
 
-    // Copy source to destination.
-    copy(path_source, path_destination)
+    // Create destination.
+    create_dir_all(path_destination)
+        .map_err(|error| Error {
+            message: format!(
+                "Failed to create directory: {}",
+                path_destination.to_string_lossy(),
+            ),
+            source: Some(Box::new(error)),
+        })?;
+
+    // Copy contents from source to destination.
+    copy(
+        path_source,
+        path_destination,
+        &CopyOptions {
+            content_only: true,
+            ..Default::default()
+        },
+    )
         .map_or_else(
             |error| Err(Error {
                 message: format!(
-                    "Failed to copy file: {} -> {}",
+                    "Failed to copy directory contents: {} -> {}",
                     path_source.to_string_lossy(),
                     path_destination.to_string_lossy(),
                 ),

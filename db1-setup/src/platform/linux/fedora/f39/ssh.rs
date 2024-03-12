@@ -2,15 +2,27 @@ mod configure;
 mod verify;
 
 
+use clap::Parser;
+use crate::Error;
 use configure::configure;
-use crate::platform::ssh::Platform;
-use lazy_static::lazy_static;
 use verify::verify;
 
 
-lazy_static! {
-    pub(super) static ref PLATFORM: Platform = Platform {
-        configure,
-        verify,
-    };
+pub(super) fn execute(args: Args) -> Result<(), Error> {
+    match args.subcommand {
+        Subcommand::Configure => configure(),
+        Subcommand::Verify => verify(),
+    }
+}
+
+#[derive(Parser, PartialEq, Eq)]
+pub struct Args {
+    #[command(subcommand)]
+    pub subcommand: Subcommand,
+}
+
+#[derive(clap::Subcommand, PartialEq, Eq)]
+pub enum Subcommand {
+    Configure,
+    Verify,
 }

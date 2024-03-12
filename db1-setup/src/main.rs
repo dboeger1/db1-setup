@@ -1,8 +1,4 @@
-use clap::Parser;
-use db1_setup::{
-    Args,
-    execute,
-};
+use db1_setup::execute;
 use std::{
     error::Error,
     process::ExitCode,
@@ -10,11 +6,7 @@ use std::{
 
 
 fn main() -> ExitCode {
-    // Parse arguments.
-    let args = Args::parse();
-
-    // Execute command logic.
-    if let Err(error) = execute(&args) {
+    if let Err(error) = execute() {
         eprintln!("Error: {error}");
         if let Some(source) = error.source() {
             eprintln!("Source: {source}");

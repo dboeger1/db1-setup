@@ -2,17 +2,29 @@ mod install;
 mod verify;
 
 
-use crate::platform::incus::Platform;
-use lazy_static::lazy_static;
+use clap::Parser;
+use crate::Error;
 use install::install;
 use verify::verify;
 
 
-lazy_static! {
-    pub(super) static ref PLATFORM: Platform = Platform {
-        install,
-        verify,
-    };
+pub(super) fn execute(args: Args) -> Result<(), Error> {
+    match args.subcommand {
+        Subcommand::Install => install(),
+        Subcommand::Verify => verify(),
+    }
+}
+
+#[derive(Parser, PartialEq, Eq)]
+pub struct Args {
+    #[command(subcommand)]
+    pub subcommand: Subcommand,
+}
+
+#[derive(clap::Subcommand, PartialEq, Eq)]
+pub enum Subcommand {
+    Install,
+    Verify,
 }
 
 

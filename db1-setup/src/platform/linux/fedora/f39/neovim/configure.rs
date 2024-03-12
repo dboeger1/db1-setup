@@ -1,7 +1,4 @@
-use crate::{
-    error::Error,
-    platform::neovim::Platform,
-};
+use crate::Error;
 use fs_extra::dir::{
     copy,
     CopyOptions,
@@ -33,17 +30,12 @@ pub struct Args {
 }
 
 
-pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
+pub(super) fn configure(args: &Args) -> Result<(), Error> {
     // Determine source path.
     let path_source: &Path;
     if let Some(path_source_arg) = args.source.as_ref() {
         path_source = path_source_arg.as_path();
-    } else if let Some(path_source_platform) = platform.source.as_ref() {
-        path_source = path_source_platform.as_path();
-        println!(
-            "Using default source path: {}",
-            path_source.to_string_lossy(),
-        );
+    // TODO: Consider default source path for unrecognized platforms.
     } else {
         return Err(Error {
             message: "--source required on platform with no default"
@@ -56,13 +48,7 @@ pub(super) fn configure(platform: &Platform, args: &Args) -> Result<(), Error> {
     let path_destination: &Path;
     if let Some(path_destination_arg) = args.destination.as_ref() {
         path_destination = path_destination_arg.as_path();
-    } else if let Some(path_destination_platform) =
-        platform.destination.as_ref() {
-        path_destination = path_destination_platform.as_path();
-        println!(
-            "Using default destination path: {}",
-            path_destination.to_string_lossy(),
-        );
+    // TODO: Consider default destination path for unrecognized platforms.
     } else {
         return Err(Error {
             message: "--destination required on platform with no default"

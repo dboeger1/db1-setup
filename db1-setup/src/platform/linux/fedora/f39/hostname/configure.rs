@@ -1,10 +1,7 @@
-use crate::{
-    error::Error,
-    hostname::configure::Args,
-};
+use crate::Error;
 
 
-pub(super) fn configure(_args: &Args) -> Result<(), Error> {
+pub(super) fn configure() -> Result<(), Error> {
     println!("<< F39 HOSTNAME CONFIGURE >>");
 
     Ok(())
