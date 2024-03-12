@@ -15,13 +15,11 @@ lazy_static! {
     pub(super) static ref STRATEGY: Option<Strategy> =
         linux::STRATEGY.clone();
 }
-
 #[cfg(target_os = "darwin")]
 lazy_static! {
     pub(super) static ref STRATEGY: Option<Strategy> =
         macos::STRATEGY.clone();
 }
-
 #[cfg(target_os = "windows")]
 lazy_static! {
     pub(super) static ref STRATEGY: Option<Strategy> =
