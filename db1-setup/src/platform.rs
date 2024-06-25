@@ -7,23 +7,28 @@ mod windows;
 
 
 use crate::Error;
-use lazy_static::lazy_static;
+use std::{
+    env::var,
+    path::PathBuf,
+};
 
+
+pub(crate) fn home_dir() -> PathBuf {
+    PathBuf::from(var("HOME").unwrap())
+}
+
+
+pub(crate) type Strategy = fn () -> Result<(), Error>;
 
 #[cfg(target_os = "linux")]
-lazy_static! {
-    pub(super) static ref STRATEGY: Option<Strategy> =
-        linux::STRATEGY.clone();
+pub(super) fn strategy() -> Option<Strategy> {
+    linux::strategy().clone()
 }
 #[cfg(target_os = "darwin")]
-lazy_static! {
-    pub(super) static ref STRATEGY: Option<Strategy> =
-        macos::STRATEGY.clone();
+pub(super) fn strategy() -> &'static Option<Strategy> {
+    macos::strategy().clone()
 }
 #[cfg(target_os = "windows")]
-lazy_static! {
-    pub(super) static ref STRATEGY: Option<Strategy> =
-        windows::STRATEGY.clone();
+pub(super) fn strategy() -> &'static Option<Strategy> {
+    windows::strategy().clone()
 }
-
-pub(crate) type Strategy = fn() -> Result<(), Error>;

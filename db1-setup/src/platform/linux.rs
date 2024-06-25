@@ -1,24 +1,21 @@
-mod dnf;
 mod fedora;
 
 
 use crate::{
     CARGO_NAME,
-    OS_INFO,
     platform::Strategy,
 };
-use lazy_static::lazy_static;
 use os_info::Type;
 use std::path::PathBuf;
 
 
-lazy_static! {
-    pub(super) static ref STRATEGY: Option<Strategy> =
-        match OS_INFO.os_type() {
-            Type::Fedora => fedora::STRATEGY.clone(),
-            _ => None,
-        };
+pub(crate) fn install_dir() -> PathBuf {
+    PathBuf::from(format!("/opt/{CARGO_NAME}"))
+}
 
-    pub(crate) static ref INSTALL_DIR: PathBuf =
-        PathBuf::from(format!("/opt/{CARGO_NAME}"));
+pub(super) fn strategy() -> Option<Strategy> {
+    match os_info::get().os_type() {
+        Type::Fedora => fedora::strategy().clone(),
+        _ => None,
+    }
 }
