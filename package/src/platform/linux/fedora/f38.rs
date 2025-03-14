@@ -5,12 +5,9 @@ use crate::platform::{
     },
     Platform,
 };
-use lazy_static::lazy_static;
 
 
-lazy_static! {
-    pub(crate) static ref PLATFORM: Platform = Platform {
-        archive_sources: archive_sources_tar,
-        package: rpmbuild,
-    };
-}
+pub(crate) const PLATFORM: Platform = Platform {
+    archive_sources: archive_sources_tar,
+    package: rpmbuild,
+};

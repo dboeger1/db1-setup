@@ -3,16 +3,12 @@ mod f39;
 
 
 use crate::platform::Platform;
-use db1_setup::OS_INFO;
-use lazy_static::lazy_static;
 use os_info::Version;
 
 
-lazy_static! {
-    pub(crate) static ref PLATFORM: Option<&'static Platform> =
-        match OS_INFO.version() {
-            Version::Semantic(38, 0, 0) => Some(&f38::PLATFORM),
-            Version::Semantic(39, 0, 0) => Some(&f39::PLATFORM),
-            _ => None,
-        };
-}
+pub(crate) const PLATFORM: Option<Platform> =
+    match os_info::get().version() {
+        Version::Semantic(38, 0, 0) => Some(f38::PLATFORM),
+        Version::Semantic(39, 0, 0) => Some(f39::PLATFORM),
+        _ => None,
+    };

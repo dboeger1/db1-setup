@@ -25,10 +25,10 @@ pub(super) fn strategy() -> Option<Strategy> {
     linux::strategy().clone()
 }
 #[cfg(target_os = "darwin")]
-pub(super) fn strategy() -> &'static Option<Strategy> {
+pub(super) fn strategy() -> Option<Strategy> {
     macos::strategy().clone()
 }
 #[cfg(target_os = "windows")]
-pub(super) fn strategy() -> &'static Option<Strategy> {
+pub(super) fn strategy() -> Option<Strategy> {
     windows::strategy().clone()
 }

@@ -1,13 +1,12 @@
 use crate::{
     error::Error,
     values::{
-        DIR_PROJECT_PACKAGES,
-        DIR_PROJECT_ROOT,
-        FILE_TAR,
+        dir_project_packages,
+        dir_project_root,
+        file_tar,
     },
 };
 use db1_setup::CARGO_NAME;
-use lazy_static::lazy_static;
 use prun::prun;
 use std::{
     fs::{
@@ -22,39 +21,37 @@ use std::{
 };
 
 
-lazy_static! {
-    static ref DIR_PACKAGES_RPM: PathBuf = DIR_PROJECT_PACKAGES.join("rpm");
+fn dir_packages_rpm() -> PathBuf {dir_project_packages().join("rpm")}
 
-    static ref DIR_RPMBUILD: PathBuf = DIR_PACKAGES_RPM.join("rpmbuild");
-    static ref DIR_RPMBUILD_BUILD: PathBuf = DIR_RPMBUILD.join("BUILD");
-    static ref DIR_RPMBUILD_BUILDROOT: PathBuf = DIR_RPMBUILD.join("BUILDROOT");
-    static ref DIR_RPMBUILD_RPMS: PathBuf = DIR_RPMBUILD.join("RPMS");
-    static ref DIR_RPMBUILD_SOURCES: PathBuf = DIR_RPMBUILD.join("SOURCES");
-    static ref DIR_RPMBUILD_SPECS: PathBuf = DIR_RPMBUILD.join("SPECS");
-    static ref DIR_RPMBUILD_SRPMS: PathBuf = DIR_RPMBUILD.join("SRPMS");
+fn dir_rpmbuild() -> PathBuf {dir_packages_rpm().join("rpmbuild")}
+fn dir_rpmbuild_build() -> PathBuf {dir_rpmbuild().join("build")}
+fn dir_rpmbuild_buildroot() -> PathBuf {dir_rpmbuild().join("buildroot")}
+fn dir_rpmbuild_rpms() -> PathBuf {dir_rpmbuild().join("rpms")}
+fn dir_rpmbuild_sources() -> PathBuf {dir_rpmbuild().join("sources")}
+fn dir_rpmbuild_specs() -> PathBuf {dir_rpmbuild().join("specs")}
+fn dir_rpmbuild_srpms() -> PathBuf {dir_rpmbuild().join("srpms")}
 
-    static ref FILE_TAR_COPY: PathBuf = DIR_RPMBUILD_SOURCES.join(
-        FILE_TAR.file_name().unwrap()
-    );
+fn file_tar_copy() -> PathBuf {dir_rpmbuild_sources().join(
+    file_tar().file_name().unwrap()
+)}
 
-    static ref FILE_SPEC: PathBuf = DIR_PROJECT_ROOT.join(
-        format!("assets/package/rpm/{CARGO_NAME}.spec"),
-    );
-    static ref FILE_SPEC_COPY: PathBuf = DIR_RPMBUILD_SPECS.join(
-        FILE_SPEC.file_name().unwrap()
-    );
-}
+fn file_spec() -> PathBuf {dir_project_root().join(
+    format!("assets/package/rpm/{CARGO_NAME}.spec"),
+)}
+fn file_spec_copy() -> PathBuf {dir_rpmbuild_specs().join(
+    file_spec().file_name().unwrap()
+)}
 
 
 pub(crate) fn rpmbuild() -> Result<(), Error> {
     // Create rpmbuild directories.
     for directory in [
-        DIR_RPMBUILD_BUILD.as_path(),
-        DIR_RPMBUILD_BUILDROOT.as_path(),
-        DIR_RPMBUILD_RPMS.as_path(),
-        DIR_RPMBUILD_SOURCES.as_path(),
-        DIR_RPMBUILD_SPECS.as_path(),
-        DIR_RPMBUILD_SRPMS.as_path(),
+        dir_rpmbuild_build().as_path(),
+        dir_rpmbuild_buildroot().as_path(),
+        dir_rpmbuild_rpms().as_path(),
+        dir_rpmbuild_sources().as_path(),
+        dir_rpmbuild_specs().as_path(),
+        dir_rpmbuild_srpms().as_path(),
     ] {
         create_dir_all(directory)
             .map_err(|error| Error {
@@ -68,15 +65,15 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
 
     // Copy source archive.
     copy(
-        FILE_TAR.as_path(),
-        FILE_TAR_COPY.as_path(),
+        file_tar().as_path(),
+        file_tar_copy().as_path(),
     )
         .map_or_else(
             |error| Err(Error {
                 message: format!(
                     "Failed to copy file: {} -> {}",
-                    FILE_TAR.to_string_lossy(),
-                    FILE_TAR_COPY.to_string_lossy(),
+                    file_tar().to_string_lossy(),
+                    file_tar_copy().to_string_lossy(),
                 ),
                 source: Some(Box::new(error)),
             }),
@@ -85,15 +82,15 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
 
     // Copy spec file.
     copy(
-        FILE_SPEC.as_path(),
-        FILE_SPEC_COPY.as_path(),
+        file_spec().as_path(),
+        file_spec_copy().as_path(),
     )
         .map_or_else(
             |error| Err(Error {
                 message: format!(
                     "Failed to copy file: {} -> {}",
-                    FILE_SPEC.to_string_lossy(),
-                    FILE_SPEC_COPY.to_string_lossy(),
+                    file_spec().to_string_lossy(),
+                    file_spec_copy().to_string_lossy(),
                 ),
                 source: Some(Box::new(error)),
             }),
@@ -105,10 +102,10 @@ pub(crate) fn rpmbuild() -> Result<(), Error> {
     rpmbuild_command.args([
         format!(
             "--define=_topdir {}",
-            DIR_RPMBUILD.to_string_lossy(),
+            dir_rpmbuild().to_string_lossy(),
         ),
         "-ba".to_string(),
-        FILE_SPEC_COPY.to_string_lossy().to_string(),
+        file_spec_copy().to_string_lossy().to_string(),
     ]);
 
     let output: Output;
